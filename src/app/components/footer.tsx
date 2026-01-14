@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Heart, Github, Linkedin, Twitter, Mail } from 'lucide-react';
+import { Heart, Github, Linkedin, Mail } from 'lucide-react';
 
 const footerLinks = {
   sections: [

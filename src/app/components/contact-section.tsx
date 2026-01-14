@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Send, Mail, MessageSquare, Github, Linkedin, Twitter } from 'lucide-react';
+import { Send, Mail, MessageSquare, Github, Linkedin } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';

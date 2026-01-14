@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import  { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Briefcase, Calendar, MapPin, Zap, X as CloseIcon } from "lucide-react";
+import { MapPin, Zap, X as CloseIcon } from "lucide-react";
 import loopixLogo from '../../assets/images/loopix.jpeg';
 import codeforchangeLogo from '../../assets/images/Copy of Codefest Shareable shridhi.png';
 import CCS from '../../assets/images/Chitwan Computer Logo - 1.png';
