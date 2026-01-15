@@ -3,38 +3,36 @@ import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Responsi
 import { Zap, Code, Database, Cloud, Brain } from 'lucide-react';
 
 const skillsData = [
-  { skill: 'Frontend', value: 95 },
-  { skill: 'Backend', value: 90 },
-  { skill: 'DevOps', value: 85 },
-  { skill: 'AI/ML', value: 80 },
-  { skill: 'Cloud', value: 88 },
-  { skill: 'Security', value: 82 }
+  { skill: 'Frontend', value: 90 },
+  { skill: 'Backend', value: 80 },
+  { skill: 'DevOps', value: 50 },
+  { skill: 'AI/ML', value: 20 },
+  { skill: 'Cloud', value: 35 },
+  { skill: 'Security', value: 50 }
 ];
 
 const techStack = [
   {
-    category: 'Frontend',
+    category: 'Languages & Frameworks',
     icon: Code,
     color: 'from-cyan-500 to-blue-500',
-    technologies: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Motion']
+    // Removed DB/Backend names to match the category
+    technologies: ['PHP', 'Laravel', 'React', 'Node.js', 'TypeScript', 'Tailwind CSS', 'Bootstrap'],
+    slugs: ['php', 'laravel', 'react', 'nodejs', 'ts', 'tailwind', 'bootstrap','vite','c',"cpp"]
   },
   {
-    category: 'Backend',
+    category: 'Databases & Cloud', // Merged for better context
     icon: Database,
     color: 'from-purple-500 to-pink-500',
-    technologies: ['Node.js', 'Python', 'PostgreSQL', 'Redis', 'GraphQL']
+    technologies: ['MySQL', 'PostgreSQL', 'AWS', 'Docker', 'Kubernetes'],
+    slugs: ['mysql', 'sqlite', 'mongodb', 'docker', 'kubernetes','gcp','ansible']
   },
   {
-    category: 'DevOps',
-    icon: Cloud,
-    color: 'from-green-500 to-emerald-500',
-    technologies: ['Docker', 'Kubernetes', 'AWS', 'Terraform', 'GitHub Actions']
-  },
-  {
-    category: 'AI/ML',
+    category: 'Tools & Platforms',
     icon: Brain,
     color: 'from-orange-500 to-red-500',
-    technologies: ['TensorFlow', 'PyTorch', 'OpenAI', 'Hugging Face', 'LangChain']
+    technologies: ['GitHub', 'Git', 'Linux', 'VS Code', 'Terraform'],
+    slugs: ['github', 'git', 'linux', 'vscode', 'terraform','firebase','figma','arduino','azure','androidstudio']
   }
 ];
 
@@ -77,7 +75,7 @@ export function SkillsSection() {
                   <PolarGrid stroke="#374151" />
                   <PolarAngleAxis
                     dataKey="skill"
-                    tick={{ fill: '#9ca3af', fontSize: 14 }}
+                    tick={{ fill: '#9ca3af', fontSize: 10 }}
                   />
                   <PolarRadiusAxis
                     angle={90}
@@ -115,17 +113,22 @@ export function SkillsSection() {
                       <div className={`p-3 rounded-xl bg-gradient-to-br ${stack.color} shadow-lg`}>
                         <Icon className="w-6 h-6 text-white" />
                       </div>
-                      <div className="flex-1">
-                        <h4 className="text-xl font-bold mb-3 text-white">{stack.category}</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {stack.technologies.map((tech) => (
-                            <span
-                              key={tech}
-                              className="px-3 py-1 text-sm rounded-full bg-gray-800/50 text-gray-300 border border-gray-700/50 hover:border-green-500/30 hover:text-green-400 transition-all cursor-default"
-                            >
-                              {tech}
-                            </span>
-                          ))}
+                    <div className="flex-1">
+                        <h4 className="text-[18px] lg:text-3xl mt-2 font-bold mb-3 text-white">{stack.category}</h4>
+                        <div className="flex- items-center ">
+                       {/* MOBILE VIEW: Shows 5 icons per line (Hidden on medium screens and up) */}
+                          <img 
+                            src={`https://skillicons.dev/icons?i=${stack.slugs.join(',')}&perline=5`} 
+                            alt={`${stack.category} icons mobile`} 
+                            className="max-w-full h-auto md:hidden"
+                          />
+
+                          {/* DESKTOP VIEW: Shows all icons in one line (Hidden on mobile, block on medium screens) */}
+                          <img 
+                            src={`https://skillicons.dev/icons?i=${stack.slugs.join(',')}`} 
+                            alt={`${stack.category} icons desktop`} 
+                            className="max-w-full h-auto hidden md:block"
+                          />
                         </div>
                       </div>
                     </div>
