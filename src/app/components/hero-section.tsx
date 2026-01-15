@@ -61,7 +61,7 @@ export function HeroSection() {
           >
             <span className="text-cyan-400">Full-Stack Developer</span> 
             <span className="mx-3 text-gray-600">•</span>
-            <span className="text-purple-400">DevOps Engineer</span>
+            <span className="text-purple-400">DevOps Trainee</span>
             <span className="mx-3 text-gray-600">•</span>
             <span className="text-pink-400">AI Enthusiast</span>
           </motion.div>
