@@ -5,45 +5,18 @@ import { Button } from './ui/button';
 const blogs = [
   {
     id: 1,
-    title: 'Building Scalable Microservices with Kubernetes',
-    excerpt: 'A comprehensive guide to deploying and managing containerized applications at scale.',
-    category: 'DevOps',
-    readTime: '8 min read',
-    date: 'Jan 8, 2026',
+    title: 'Essential Basic Commands for Beginners',
+    excerpt: 'A beginner-friendly guide to essential Linux commands that every new user should know to navigate and work efficiently in the terminal.',
+    category: 'Linux',
+    readTime: '6 min read',
+    date: 'Oct 25, 2025',
     featured: true,
-    tags: ['Kubernetes', 'Docker', 'DevOps']
-  },
-  {
-    id: 2,
-    title: 'The Future of AI in Software Development',
-    excerpt: 'Exploring how artificial intelligence is transforming the way we write and maintain code.',
-    category: 'AI/ML',
-    readTime: '12 min read',
-    date: 'Jan 5, 2026',
-    featured: true,
-    tags: ['AI', 'Machine Learning', 'Automation']
-  },
-  {
-    id: 3,
-    title: 'Optimizing React Performance in 2026',
-    excerpt: 'Advanced techniques for building lightning-fast React applications.',
-    category: 'Frontend',
-    readTime: '10 min read',
-    date: 'Dec 28, 2025',
-    featured: false,
-    tags: ['React', 'Performance', 'JavaScript']
-  },
-  {
-    id: 4,
-    title: 'Zero-Trust Security Architecture',
-    excerpt: 'Implementing modern security practices in distributed systems.',
-    category: 'Security',
-    readTime: '15 min read',
-    date: 'Dec 20, 2025',
-    featured: false,
-    tags: ['Security', 'Architecture', 'Best Practices']
+    author: 'Sandesh Gadal',
+    tags: ['Linux', 'Basic Commands', 'Beginner'],
+    link: 'https://bosc.org.np/blogs/basic-linux-commands/'
   }
 ];
+
 
 export function BlogSection() {
   return (
@@ -134,8 +107,10 @@ export function BlogSection() {
                     variant="ghost"
                     className="text-cyan-400 hover:text-cyan-300 hover:bg-cyan-500/10 group/btn"
                   >
+                    <a href={blog.link} className='flex items-center' target="_blank" rel="noopener noreferrer">
                     Read More
                     <ArrowRight className="w-4 h-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                 </a>
                   </Button>
                 </div>
 
