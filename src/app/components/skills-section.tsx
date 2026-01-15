@@ -1,6 +1,6 @@
 import { motion } from 'motion/react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
-import { Zap, Code, Database, Cloud, Brain } from 'lucide-react';
+import { Zap, Code, Database, Brain } from 'lucide-react';
 
 const skillsData = [
   { skill: 'Frontend', value: 90 },
