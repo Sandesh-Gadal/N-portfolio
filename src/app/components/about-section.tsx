@@ -1,12 +1,14 @@
 import { motion } from 'motion/react';
 import { User, Award, Download, MapPin, Coffee } from 'lucide-react';
 import { Button } from './ui/button';
+import pic from '../../assets/images/profile-pic.png';
+import pdf from '../../assets/pdfs/CV-(sandesh-gadal) .pdf'
 
 const achievements = [
-  { label: 'Years Experience', value: '7+' },
-  { label: 'Projects Completed', value: '150+' },
-  { label: 'Open Source Contributions', value: '500+' },
-  { label: 'Technical Articles', value: '50+' }
+  { label: 'Years Experience', value: '1+' },
+  { label: 'Projects Completed', value: '10+' },
+  { label: 'Open Source Contributions', value: '50+' },
+  { label: 'Technical Articles', value: '10+' }
 ];
 
 export function AboutSection() {
@@ -41,19 +43,23 @@ export function AboutSection() {
             <div className="sticky top-8 p-8 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-gray-700/50 backdrop-blur-xl shadow-2xl">
               {/* Avatar */}
               <div className="relative mb-6">
-                <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-orange-500 to-yellow-500 p-1">
+                <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-orange-900 to-yellow-400 p-1">
                   <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center text-5xl">
-                    👨‍💻
+                    <img 
+                    src={pic} 
+                    alt="Profile" 
+                    className="w-full h-full object-cover"
+                  />
                   </div>
                 </div>
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-xs font-medium flex items-center gap-1">
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2 py-1 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 text-xs font-medium flex items-center gap-1">
                   <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
                   Available for work
                 </div>
               </div>
 
               <h3 className="text-2xl font-bold text-center mb-2 text-white">Sandesh Gadal</h3>
-              <p className="text-center text-gray-400 mb-6">Full-Stack Developer & Backend Engineer</p>
+              <p className="text-center text-gray-400 mb-6">Full-Stack Developer </p>
 
               <div className="space-y-3 mb-6">
                 <div className="flex items-center gap-3 text-gray-400">
@@ -70,7 +76,7 @@ export function AboutSection() {
                 className="w-full bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white border-0 shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 transition-all"
               >
                 <Download className="w-4 h-4 mr-2" />
-                Download Resume
+              <a href={pdf} download>Download Resume</a>
               </Button>
             </div>
           </motion.div>
@@ -84,14 +90,14 @@ export function AboutSection() {
             className="lg:col-span-2 space-y-8"
           >
             {/* Bio */}
-            <div className="p-8 rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/50 border border-gray-700/50 backdrop-blur-xl">
+            <div className="px-8 pb-24 pt-8 rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/50 border border-gray-700/50 backdrop-blur-xl">
               <h3 className="text-2xl font-bold mb-4 text-white flex items-center gap-2">
                 <User className="w-6 h-6 text-orange-400" />
                 Biography
               </h3>
               <div className="space-y-4 text-gray-400 leading-relaxed">
                 <p>
-                  I'm a passionate full-stack developer with 7+ years of experience in building scalable web applications and backend systems. I have worked across projects from NFC-based attendance systems, multi-cloud platforms, to various web and mobile apps.
+                  I'm a passionate full-stack developer with 1+ years of experience in building scalable web applications and backend systems. I have worked across projects from NFC-based attendance systems, multi-cloud platforms, to various web and mobile apps.
                 </p>
                 <p>
                   Skilled in Laravel, React.js, MySQL, REST APIs, and modern frontend/backend development. I have a strong foundation in database design, project planning, and DevOps practices, ensuring efficient and reliable solutions.
