@@ -62,6 +62,10 @@ export function BlogSection() {
                       ⭐ Featured
                     </span>
                   )}
+                   <div className="flex  items-center gap-1 ml-auto">
+                      <Clock className="w-4 h-4" />
+                      <span>{blog.readTime}</span>
+                    </div>
                 </div>
 
                 {/* Title */}
@@ -96,10 +100,7 @@ export function BlogSection() {
                       <Calendar className="w-4 h-4" />
                       <span>{blog.date}</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{blog.readTime}</span>
-                    </div>
+                   
                   </div>
 
                   <Button
