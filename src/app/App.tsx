@@ -10,9 +10,12 @@ import { AboutSection } from './components/about-section';
 import { ContactSection } from './components/contact-section';
 import { Footer } from './components/footer';
 import { ScrollProgress } from './components/scroll-progress';
+import Preloader from './components/preloader';
+import { AnimatePresence } from 'framer-motion';
 
 export default function App() {
   const [theme, setTheme] = useState<'dark' | 'light' | 'neon'>('dark');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Apply theme classes to document
@@ -26,9 +29,17 @@ export default function App() {
       <ParticlesBackground />
 
       {/* Scroll Progress */}
-      <ScrollProgress />
+      {/* <ScrollProgress /> */}
 
-      {/* Navigation */}
+      <AnimatePresence>
+
+        {loading && <Preloader onFinish={() => setLoading(false)} />}
+      </AnimatePresence>
+
+        {!loading && (
+           <>
+                {/* Navigation */}
+               
       <Navbar theme={theme} onThemeChange={setTheme} />
 
       {/* Main Content */}
@@ -44,6 +55,8 @@ export default function App() {
 
       {/* Footer */}
       <Footer />
+      </>
+        )}
 
       {/* Background Effects */}
       <div className="fixed inset-0 pointer-events-none z-0">

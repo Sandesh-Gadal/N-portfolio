@@ -178,7 +178,7 @@ export function ExperienceSection() {
   const ANIMATION_DURATION = 2.5;
 
   return (
-    <section id="experience" className="relative py-20 md:py-32 bg-gray-900 overflow-hidden">
+    <section id="experience" className="relative py-20 md:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 text-center mb-16 md:mb-24">
         <motion.div 
           initial={{ opacity: 0 }}
