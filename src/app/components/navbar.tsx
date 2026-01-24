@@ -40,12 +40,12 @@ export function Navbar({ theme, onThemeChange }: NavbarProps) {
     }
   };
 
-  const cycleTheme = () => {
-    const themes: Array<'dark' | 'light' | 'neon'> = ['dark', 'light', 'neon'];
-    const currentIndex = themes.indexOf(theme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    onThemeChange(themes[nextIndex]);
-  };
+  // const cycleTheme = () => {
+  //   const themes: Array<'dark' | 'light' | 'neon'> = ['dark', 'light', 'neon'];
+  //   const currentIndex = themes.indexOf(theme);
+  //   const nextIndex = (currentIndex + 1) % themes.length;
+  //   onThemeChange(themes[nextIndex]);
+  // };
 
   return (
     <motion.nav
