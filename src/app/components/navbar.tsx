@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Sun, Moon, Zap } from 'lucide-react';
-import { Button } from './ui/button';
+// import { Menu, X, Sun, Moon, Zap } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
+// import { Button } from './ui/button';
 
 interface NavbarProps {
   theme: 'dark' | 'light' | 'neon';
