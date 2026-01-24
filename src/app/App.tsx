@@ -28,8 +28,7 @@ export default function App() {
       {/* Particle Background */}
       <ParticlesBackground />
 
-      {/* Scroll Progress */}
-      {/* <ScrollProgress /> */}
+      
 
       <AnimatePresence>
 
@@ -39,7 +38,8 @@ export default function App() {
         {!loading && (
            <>
                 {/* Navigation */}
-               
+      {/* Scroll Progress */}
+      <ScrollProgress />         
       <Navbar theme={theme} onThemeChange={setTheme} />
 
       {/* Main Content */}

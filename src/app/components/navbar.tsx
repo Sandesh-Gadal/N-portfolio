@@ -87,7 +87,7 @@ export function Navbar({ theme, onThemeChange }: NavbarProps) {
 
           {/* Theme Toggle & Mobile Menu */}
           <div className="flex items-center gap-4">
-            <Button
+            {/* <Button
               size="sm"
               variant="outline"
               onClick={cycleTheme}
@@ -96,7 +96,7 @@ export function Navbar({ theme, onThemeChange }: NavbarProps) {
               {theme === 'dark' && <Moon className="w-4 h-4" />}
               {theme === 'light' && <Sun className="w-4 h-4" />}
               {theme === 'neon' && <Zap className="w-4 h-4" />}
-            </Button>
+            </Button> */}
 
             <button
               onClick={() => setIsOpen(!isOpen)}

@@ -1,3 +1,10 @@
 @import './theme.css';
 @import "tailwindcss";
 
+
+@theme {
+  /* This maps your tailwind "surface" color to the CSS variable */
+  --color-app-bg: var(--background);
+  --color-app-text: var(--foreground);
+  --color-app-primary: var(--primary);
+}

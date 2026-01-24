@@ -79,7 +79,7 @@
   --sidebar-ring: oklch(0.439 0 0);
 }
 
-.theme-light {
+/* .theme-light {
   --background: #f8f9fa;
   --foreground: #1a1a1a;
 }
@@ -87,4 +87,28 @@
 .theme-neon {
   --background: #000000;
   --foreground: #00ff88;
+} */
+
+.theme-light {
+  --background: #ffffff;
+  --foreground: #0f172a;      /* Deep Navy/Slate - much easier to read */
+  --card: #f8fafc;
+  --card-foreground: #0f172a;
+  --primary: #2563eb;        /* Professional Blue */
+  --primary-foreground: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+}
+
+.theme-neon {
+  --background: #000000;
+  --foreground: #00ff88; /* Neon Green text */
+  --primary: #00ff88;
+  --card: #050505;
+  --border: #00ff88;
+  --muted: #003311;
+  --accent: #bc13fe;     /* Neon Purple for contrast */
 }
