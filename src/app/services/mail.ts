@@ -1,11 +1,11 @@
 import emailjs from '@emailjs/browser';
 
 // Define the shape of our response
-interface EmailResponse {
-  success: boolean;
-  response?: any;
-  error?: any;
-}
+// interface EmailResponse {
+//   success: boolean;
+//   response?: any;
+//   error?: any;
+// }
 
 // Configuration from .env file
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
