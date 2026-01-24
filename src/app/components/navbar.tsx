@@ -19,7 +19,7 @@ const navItems = [
   { label: 'Contact', href: '#contact' }
 ];
 
-export function Navbar({ theme, onThemeChange }: NavbarProps) {
+export function Navbar({}: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
