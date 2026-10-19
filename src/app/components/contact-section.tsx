@@ -1,216 +1,160 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { Send, Mail, MessageSquare, Github, Linkedin, CheckCircle2 } from 'lucide-react';
-import { Button } from './ui/button';
+import { useRef, useState } from 'react';
+import { ArrowUpRight, Check, Copy, Send } from 'lucide-react';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
-import { useState, useRef } from 'react'; // Added useRef
-import { sendContactEmail } from '../services/mail.ts';
+import { sendContactEmail } from '../services/mail';
+import { profile } from '../data/profile';
+import { Avatar } from './avatar';
+import { Reveal, SectionLabel } from './section';
 
-const socialLinks = [
-  { name: 'GitHub', icon: Github, url: 'https://github.com/Sandesh-Gadal', color: 'hover:text-purple-400' },
-  { name: 'LinkedIn', icon: Linkedin, url: 'https://www.linkedin.com/in/sandesh-gadal/', color: 'hover:text-cyan-400' },
-];
+type Status = 'idle' | 'sending' | 'sent' | 'error';
+
+const fieldClass =
+  'rounded-lg border-screen-line bg-screen-2 font-mono text-[15px] text-on-screen placeholder:text-on-screen-muted/60 focus-visible:border-signal focus-visible:ring-signal/30';
+
+const statusLine: Record<Status, string> = {
+  idle: '> ready',
+  sending: '> transmitting…',
+  sent: "> sent. I'll reply by email.",
+  error: `> failed. Please email ${profile.email} directly.`
+};
 
 export function ContactSection() {
-  const formRef = useRef<HTMLFormElement>(null); // Reference for EmailJS
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  });
+  const formRef = useRef<HTMLFormElement>(null);
+  const [status, setStatus] = useState<Status>('idle');
+  const [copied, setCopied] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!formRef.current) return;
 
     setStatus('sending');
-
-    try {
-      const result = await sendContactEmail(formRef.current);
-      
-      if (result.success) {
-        setStatus('success');
-        setFormData({ name: '', email: '', message: '' }); // Clear state
-        // Reset success message after 5 seconds
-        setTimeout(() => setStatus('idle'), 5000);
-      } else {
-        setStatus('error');
-      }
-    } catch (err) {
+    const result = await sendContactEmail(formRef.current);
+    if (result.success) {
+      formRef.current.reset();
+      setStatus('sent');
+    } else {
       setStatus('error');
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.location.href = `mailto:${profile.email}`;
+    }
   };
 
   return (
-    <section id="contact" className="relative py-32 px-6">
-      <div className="max-w-5xl mx-auto">
-        {/* ... Header remains the same ... */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
-            <MessageSquare className="w-4 h-4 text-blue-400" />
-            <span className="text-blue-400 text-sm font-medium">Let's Connect</span>
-          </div>
-          <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-            Get In Touch
-          </h2>
-        </motion.div>
+    <section id="contact" aria-labelledby="contact-title" className="page py-10 md:py-16">
+      <div className="screen overflow-hidden">
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(var(--screen-line)_1.1px,transparent_1.3px)] bg-size-[24px_24px]" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="lg:col-span-2"
-          >
-            {/* Added ref={formRef} here */}
-            <form 
-              ref={formRef} 
-              onSubmit={handleSubmit} 
-              className="p-8 rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/50 border border-gray-700/50 backdrop-blur-xl space-y-6"
-            >
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">Name</label>
-                <Input
-                  id="name"
-                  name="name" // Matches {{name}} in EmailJS
-                  type="text"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Your name"
-                  className="bg-gray-900/50 border-gray-700/50 text-white"
-                  required
-                />
-              </div>
+        <div className="relative grid grid-cols-1 gap-14 px-6 py-16 md:px-12 md:py-20 lg:grid-cols-12 lg:gap-10">
+          <Reveal className="lg:col-span-7">
+            <div className="flex items-center justify-between gap-6">
+              <SectionLabel label="Contact" onScreen />
+              <Avatar pose="wave" size="size-16 md:size-20" />
+            </div>
+            <h2 id="contact-title" className="display mt-6 text-[clamp(2.75rem,7vw,5.5rem)]">
+              Got a system <span className="block text-trace">to build?</span>
+            </h2>
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-on-screen-muted">
+              I'm open to backend and full-stack roles, and to freelance work on Laravel, APIs and databases. Tell me what
+              you're building; I usually reply within a day, Nepal time.
+            </p>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">Email</label>
-                <Input
-                  id="email"
-                  name="email" // Matches {{email}} in EmailJS
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="your.email@example.com"
-                  className="bg-gray-900/50 border-gray-700/50 text-white"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-400 mb-2">Message</label>
-                <Textarea
-                  id="message"
-                  name="message" // Matches {{message}} in EmailJS
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Tell me about your project..."
-                  rows={6}
-                  className="bg-gray-900/50 border-gray-700/50 text-white resize-none"
-                  required
-                />
-              </div>
-
-              <Button
-                type="submit"
-                size="lg"
-                disabled={status === 'sending' || status === 'success'}
-                className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white shadow-lg shadow-cyan-500/30 transition-all"
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <a
+                href={`mailto:${profile.email}`}
+                className="break-all font-mono text-xl underline decoration-signal decoration-1 underline-offset-8 transition-colors hover:text-signal md:text-2xl"
               >
-                {status === 'sending' ? (
-                  "Sending..."
-                ) : status === 'success' ? (
-                  <>
-                    <CheckCircle2 className="w-5 h-5 mr-2" />
-                    Sent Successfully
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5 mr-2" />
-                    Send Message
-                  </>
-                )}
-              </Button>
+                {profile.email}
+              </a>
+              <button
+                type="button"
+                onClick={copyEmail}
+                className="key key-screen h-9 px-3 text-xs"
+                aria-label={copied ? 'Email copied' : 'Copy email address'}
+              >
+                {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+                {copied ? 'copied' : 'copy'}
+              </button>
+              <span role="status" className="sr-only">
+                {copied ? 'Email address copied to clipboard' : ''}
+              </span>
+            </div>
 
-              {/* Success/Error Feedback */}
-              <AnimatePresence>
-                {status === 'error' && (
-                  <motion.p 
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: 1 }} 
-                    className="text-red-400 text-sm text-center"
-                  >
-                    Something went wrong. Please try again or email me directly.
-                  </motion.p>
-                )}
-              </AnimatePresence>
-            </form>
-          </motion.div>
+            <div className="mt-8 flex flex-wrap gap-2">
+              {[
+                ['GitHub', profile.links.github],
+                ['LinkedIn', profile.links.linkedin]
+              ].map(([label, href]) => (
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="key key-screen">
+                  {label} <ArrowUpRight className="size-4" aria-hidden />
+                </a>
+              ))}
+            </div>
+          </Reveal>
 
-          {/* ... Contact Info Column remains the same ... */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="lg:col-span-1 space-y-6"
-          >
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/50 border border-gray-700/50 backdrop-blur-xl hover:border-cyan-500/50 transition-all duration-500">
-              <div className="flex items-center gap-4 mb-3">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500">
-                  <Mail className="w-5 h-5 text-white" />
+          <Reveal delay={0.1} className="lg:col-span-5">
+            <form
+              ref={formRef}
+              onSubmit={handleSubmit}
+              className="rounded-2xl border border-screen-line bg-screen p-5 md:p-7"
+            >
+              <div className="mb-6 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.14em] text-on-screen-muted">
+                <span>tx · message</span>
+                <span className="flex items-center gap-2">
+                  <span
+                    className={`led ${status === 'sending' ? 'led-signal animate-pulse-led' : status === 'error' ? 'led-signal' : status === 'sent' ? '' : 'led-off'}`}
+                    aria-hidden
+                  />
+                  {status}
+                </span>
+              </div>
+
+              <div className="grid gap-5">
+                <div>
+                  <label htmlFor="name" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.14em] text-on-screen-muted">
+                    Name
+                  </label>
+                  <Input id="name" name="name" autoComplete="name" required className={`h-12 ${fieldClass}`} />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-400">Email</p>
-                  <a href="mailto:gadalsandesh123@gmail.com" className="text-white hover:text-cyan-400">
-                    gadalsandesh123@gmail.com
-                  </a>
+                  <label htmlFor="email" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.14em] text-on-screen-muted">
+                    Email
+                  </label>
+                  <Input id="email" name="email" type="email" autoComplete="email" required className={`h-12 ${fieldClass}`} />
                 </div>
-              </div>
-            </div>
-            
-            {/* ... Social Links map ... */}
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-gray-900/50 to-gray-800/50 border border-gray-700/50 backdrop-blur-xl">
-              <h3 className="text-lg font-bold mb-4 text-white">Connect on Social</h3>
-              <div className="space-y-3">
-                {socialLinks.map((social) => {
-                  const Icon = social.icon;
-                  return (
-                    <a
-                      key={social.name}
-                      href={social.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`flex items-center gap-3 p-3 rounded-xl bg-gray-800/50 border border-gray-700/50 hover:border-cyan-500/50 text-gray-400 ${social.color} transition-all group`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      <span className="text-sm font-medium">{social.name}</span>
-                      <span className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                    </a>
-                  );
-                })}
-              </div>
-            </div>
+                <div>
+                  <label htmlFor="message" className="mb-2 block font-mono text-[11px] uppercase tracking-[0.14em] text-on-screen-muted">
+                    Message
+                  </label>
+                  <Textarea
+                    id="message"
+                    name="message"
+                    rows={5}
+                    required
+                    placeholder="What are you building, and where could I help?"
+                    className={`min-h-36 ${fieldClass}`}
+                  />
+                </div>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20">
-              <p className="text-sm text-gray-400 mb-2">⚡ Quick Response</p>
-              <p className="text-white font-medium">I typically respond within 24 hours</p>
-            </div>
-          </motion.div>
+                <button type="submit" disabled={status === 'sending'} className="key key-signal w-full">
+                  {status === 'sending' ? 'Sending…' : 'Send message'}
+                  <Send className="size-4" aria-hidden />
+                </button>
+
+                <p role="status" aria-live="polite" className="min-h-5 font-mono text-xs text-on-screen-muted">
+                  {statusLine[status]}
+                </p>
+              </div>
+            </form>
+          </Reveal>
         </div>
       </div>
     </section>

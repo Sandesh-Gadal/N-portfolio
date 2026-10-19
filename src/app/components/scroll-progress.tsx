@@ -1,10 +1,9 @@
-// import { useEffect, useState } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useSpring } from 'motion/react';
 
 export function ScrollProgress() {
   // Using Framer Motion's useScroll is much more performant than manual event listeners
   const { scrollYProgress } = useScroll();
-  
+
   // useSpring smooths the movement without the "lag" of CSS transitions
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -14,11 +13,11 @@ export function ScrollProgress() {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 h-1 bg-transparent z-[9999] origin-left"
-      style={{ 
+      className="fixed top-0 left-0 right-0 h-0.5 bg-transparent z-9999 origin-left"
+      style={{
         scaleX,
-        background: 'linear-gradient(90deg, #22d3ee, #a855f7, #ec4899)',
-        boxShadow: '0 0 8px rgba(34,211,238,0.5)' 
+        background: '#22d3ee',
+        boxShadow: '0 0 8px rgba(34,211,238,0.6)'
       }}
     />
   );

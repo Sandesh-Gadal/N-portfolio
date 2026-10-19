@@ -1,319 +1,157 @@
-import  { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Zap, X as CloseIcon } from "lucide-react";
-import loopixLogo from '../../assets/images/loopix.jpeg';
-import codeforchangeLogo from '../../assets/images/Copy of Codefest Shareable shridhi.png';
-import CCS from '../../assets/images/Chitwan Computer Logo - 1.png';
-import oxfordLogo from '../../assets/images/oxfordlogo.png';
-import encryptixLogo from '../../assets/images/encryptixlogo.png';
+import { motion, useReducedMotion } from 'motion/react';
+import { experience, type Role } from '../data/experience';
+import { Avatar } from './avatar';
+import { Section } from './section';
 
-type Experience = {
-  id: number;
-  title: string;
-  company: string;
-  period: string;
-  description: string;
-  achievements: string[];
-  logo?: string;
-};
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+const NOW = (() => {
+  const d = new Date();
+  return d.getFullYear() * 12 + d.getMonth();
+})();
 
-const experiences: Experience[] = [
-  {
-    id: 1,
-    title: 'Backend Developer',
-    company: 'Loopix Creations',
-    period: 'May 2025 - Present',
-    logo: loopixLogo,
-    description: 'Working as a Backend Developer focusing on building scalable and secure backend systems and optimizing databases.',
-    achievements: [
-      'Designed and implemented RESTful APIs using Laravel',
-      'Optimized MySQL database queries to improve performance',
-      'Handled deployment and maintenance in hybrid environments'
-    ]
-  },
-  {
-    id: 2,
-    title: 'Admin Lead',
-    company: 'Code for Change',
-    period: 'Jan 2025 - Present',
-    logo: codeforchangeLogo,
-    description: 'Leading administrative and organizational activities within the Code for Change community.',
-    achievements: [
-      'Organized and managed multiple workshops and tech programs',
-      'Coordinated with team members and external collaborators',
-      'Strengthened leadership and project management skills'
-    ]
-  },
-  {
-    id: 3,
-    title: 'Backend Developer Intern',
-    company: 'OCEM',
-    period: 'Nov 2024 - Jan 2025',
-    logo: oxfordLogo,
-    description: 'Built responsive user interfaces and integrated frontend components with Laravel backend services.',
-    achievements: [
-      'Developed UI components using React.js and Tailwind CSS',
-      'Improved website responsiveness and usability',
-      'Followed version control best practices with GitLab'
-    ]
-  },
-  {
-    id: 4,
-    title: 'General Member',
-    company: 'Code for Change',
-    period: 'Jan 2024 - Dec 2024',
-    logo: codeforchangeLogo,
-    description: 'Active community member contributing to technical learning and event organization.',
-    achievements: [
-      'Participated in community-driven projects',
-      'Assisted in organizing workshops and events',
-      'Collaborated with developers from diverse backgrounds'
-    ]
-  },
-  {
-    id: 5,
-    title: 'Web Developer',
-    company: 'Self-employed',
-    period: 'Sep 2023 - Dec 2024',
-    description: 'Worked independently delivering websites and web applications for various clients.',
-    achievements: [
-      'Built full-stack applications using Laravel and React',
-      'Handled end-to-end project development and deployment',
-      'Improved client communication and problem-solving'
-    ]
-  },
-  {
-    id: 6,
-    title: 'Web Development Intern',
-    company: 'Encryptix',
-    period: 'Jul 2024 - Aug 2024',
-    logo: encryptixLogo,
-    description: 'Remote internship focused on core web development fundamentals and real-world implementation.',
-    achievements: [
-      'Worked with semantic HTML, CSS, and JavaScript',
-      'Developed small web projects and UI components',
-      'Gained hands-on experience in web design principles'
-    ]
-  },
-  {
-    id: 7,
-    title: 'Computer Service Tech',
-    company: 'Chitwan Computer',
-    period: 'Feb 2021 - Jul 2023',
-    logo: CCS,
-    description: 'Provided technical support, hardware maintenance, and troubleshooting services.',
-    achievements: [
-      'Diagnosed and repaired hardware and software issues',
-      'Installed and maintained operating systems',
-      'Developed strong foundational IT skills'
-    ]
-  }
-];
+/**
+ * "May 2025" → absolute month index; "Present" → now.
+ * Year-only parts ("2024 — 2025", a term) are placed mid-year to mid-year.
+ */
+function toMonth(part: string, edge: 'start' | 'end') {
+  const p = part.trim().toLowerCase();
+  if (p === 'present') return NOW;
+  const bits = p.split(/\s+/);
+  if (bits.length === 1) return Number(bits[0]) * 12 + (edge === 'start' ? 6 : 5);
+  return Number(bits[1]) * 12 + MONTHS.indexOf(bits[0].slice(0, 3));
+}
 
+function span(role: Role) {
+  const [from, to] = role.period.split('—');
+  return { start: toMonth(from, 'start'), end: toMonth(to, 'end') };
+}
+
+const isCurrent = (role: Role) => role.period.includes('Present');
+
+function duration(role: Role) {
+  if (role.term) return role.term;
+  const { start, end } = span(role);
+  // A running role counts whole months so far; a finished one includes its last month.
+  const months = end - start + (isCurrent(role) ? 0 : 1);
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+  return [y && `${y} yr`, m && `${m} mo`].filter(Boolean).join(' ') || '1 mo';
+}
+
+// Oldest first: the bottom step is where it started, the top step is the latest role.
+const steps = [...experience].sort((a, b) => span(a).start - span(b).start);
+const FIRST_YEAR = Math.floor(span(steps[0]).start / 12);
+const RISE = 64; // px each step rises (large screens)
+const HEADROOM = 250; // px above the top tread for its label, the avatar and the flag
+
+const year = (role: Role) => Math.floor(span(role).start / 12);
+
+/**
+ * Experience as a staircase drawn with one plain line: the first job on the bottom step, each
+ * later role a step higher, and the avatar with a "Now" flag on the top step. Each role's
+ * details sit on its tread. The line draws in from left to right when it scrolls into view.
+ * Large screens climb left → right; small screens climb bottom → top down the page.
+ */
 export function ExperienceSection() {
-  const [active, setActive] = useState<Experience | null>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [containerWidth, setContainerWidth] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        setContainerWidth(containerRef.current.offsetWidth);
-      }
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-    const handleMouseMove = (e: MouseEvent) => setMousePos({ x: e.clientX, y: e.clientY });
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      window.removeEventListener("resize", updateDimensions);
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
-
-  const getPinPos = (index: number) => {
-    const total = experiences.length;
-    if (isMobile) {
-      const centerX = containerWidth / 2;
-      const waveAmplitude = 60; 
-      const x = centerX + (index % 2 === 0 ? -waveAmplitude  : waveAmplitude);
-      const y = index * 150 + 50; 
-      return { x, y };
-    }
-    const x = (containerWidth / (total + 1)) * (index + 1);
-    const y = index % 2 === 0 ? 80 : 220;
-    return { x, y };
+  const reduced = useReducedMotion();
+  const n = steps.length;
+  const draw = {
+    initial: reduced ? false : ({ clipPath: 'inset(0 100% 0 0)' } as const),
+    whileInView: { clipPath: 'inset(0 0% 0 0)' },
+    viewport: { once: true, margin: '-80px' },
+    transition: { duration: 1.4, ease: [0.65, 0, 0.35, 1] as const }
   };
-
-  const generatePath = () => {
-    if (containerWidth === 0) return "";
-    
-    if (isMobile) {
-      let path = `M ${containerWidth / 2} 0 `;
-      experiences.forEach((_, i) => {
-        const { x, y } = getPinPos(i);
-        const prevY = i === 0 ? 0 : getPinPos(i - 1).y;
-        const cp1y = prevY + (y - prevY) / 2;
-        path += `C ${containerWidth / 2} ${cp1y}, ${x} ${cp1y}, ${x} ${y} `;
-      });
-      return path;
-    }
-
-    let path = `M 0 150 `;
-    experiences.forEach((_, i) => {
-      const { x, y } = getPinPos(i);
-      const prevX = i === 0 ? 0 : getPinPos(i - 1).x;
-      const cp1x = prevX + (x - prevX) / 2;
-      path += `C ${cp1x} 150, ${cp1x} ${y}, ${x} ${y} `;
-    });
-    path += `H ${containerWidth}`;
-    return path;
-  };
-
-  const ANIMATION_DURATION = 2.5;
 
   return (
-    <section id="experience" className="relative py-20 md:py-32 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 text-center mb-16 md:mb-24">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/20"
-        >
-          <Zap className="w-4 h-4 text-cyan-400" />
-          <span className="text-cyan-400 text-xs font-bold uppercase tracking-widest">My Journey</span>
-        </motion.div>
-        <h2 className="text-4xl md:text-7xl font-extrabold bg-gradient-to-r from-pink-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">
-          Experience
-        </h2>
-      </div>
+    <Section
+      id="experience"
+      label="Experience"
+      title={
+        <>
+          Where I've <em>worked</em>
+        </>
+      }
+      lede={`${n} roles since ${FIRST_YEAR}, from a repair bench in Chitwan to leading an IoT build. Some ran side by side.`}
+    >
+      {/* Large screens: steps climb left to right */}
+      <motion.ol {...draw} className="relative hidden items-end md:flex" style={{ height: n * RISE + HEADROOM }}>
+        {steps.map((role, i) => {
+          const live = isCurrent(role);
+          const top = i === n - 1;
+          return (
+            <li
+              key={`${role.company}-${role.title}`}
+              className={`relative flex-1 border-t-2 ${live ? 'border-signal' : 'border-foreground/70'}`}
+              style={{ height: (i + 1) * RISE }}
+            >
+              {/* Riser up to this tread */}
+              <span
+                aria-hidden
+                className={`absolute left-0 top-0 border-l-2 ${live ? 'border-signal' : 'border-foreground/70'}`}
+                style={{ height: i === 0 ? RISE : RISE + 2, marginTop: -2 }}
+              />
+              {/* What's on this step */}
+              <div className="absolute bottom-full left-0 w-full pb-3 pl-3 pr-2">
+                {top && <Climber />}
+                <StepLabel role={role} />
+              </div>
+            </li>
+          );
+        })}
+      </motion.ol>
 
-      <div className="max-w-7xl mx-auto px-6">
-        <div 
-          ref={containerRef} 
-          className="relative w-full" 
-          style={{ height: isMobile ? `${experiences.length * 150}px` : '350px' }}
-        >
-          <svg className="absolute inset-0 w-full h-full overflow-visible pointer-events-none">
-            <motion.path
-              d={generatePath()}
-              fill="none"
-              stroke="url(#lineGrad)"
-              strokeWidth="5"
-              strokeLinecap="round"
-              initial={{ pathLength: 0 }}
-              whileInView={{ pathLength: 1 }}
-              viewport={{ once: true, amount: 0.1 }}
-              transition={{ duration: ANIMATION_DURATION, ease: "linear" }}
-            />
-            <defs>
-              <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#ec4899" />
-                <stop offset="100%" stopColor="#22d3ee" />
-              </linearGradient>
-            </defs>
-          </svg>
+      {/* Small screens: newest at the top, each step further right */}
+      <ol className="md:hidden">
+        {[...steps].reverse().map((role, i) => {
+          const live = isCurrent(role);
+          return (
+            <li
+              key={`${role.company}-${role.title}`}
+              className={`border-l-2 border-t-2 pb-6 pl-4 pt-3 ${live ? 'border-signal' : 'border-foreground/70'}`}
+              style={{ marginLeft: `${(n - 1 - i) * 0.9}rem` }}
+            >
+              {i === 0 && <Climber />}
+              <StepLabel role={role} />
+            </li>
+          );
+        })}
+      </ol>
+    </Section>
+  );
+}
 
-          {experiences.map((exp, i) => {
-            const { x, y } = getPinPos(i);
-            const isLeft = i % 2 === 0;
-            const pinDelay = (i / experiences.length) * ANIMATION_DURATION;
+function StepLabel({ role }: { role: Role }) {
+  const live = isCurrent(role);
+  return (
+    <div>
+      <p className={`display text-2xl leading-none ${live ? 'text-signal' : 'text-muted-foreground'}`}>{year(role)}</p>
+      <h3 className="mt-1.5 text-sm font-semibold leading-snug">{role.title}</h3>
+      <p className="text-xs font-semibold text-signal-ink">{role.company}</p>
+      <p className="meta mt-0.5 text-[11px]">
+        {duration(role)}
+        {role.kind && ` · ${role.kind}`}
+        {live && <span className="sr-only"> (current role)</span>}
+      </p>
+    </div>
+  );
+}
 
-            return (
-              <motion.div
-                key={exp.id}
-                className="absolute flex items-center justify-center"
-                style={{ left: x, top: y, width: '60px', height: '0px', translateX: '-40px' }}
-                initial={{ scale: 0, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: true, amount: 0.1 }}
-                
-                transition={{ 
-                  delay: pinDelay, 
-                  type: "spring", 
-                  stiffness: 200,
-                  damping: 20 
-                }}
-              >
-                <motion.div
-                  onMouseEnter={() => !isMobile && setActive(exp)}
-                  onMouseLeave={() => !isMobile && setActive(null)}
-                  onClick={(e) => {
-                    if (isMobile) {
-                      e.stopPropagation();
-                      setActive(exp);
-                    }
-                  }}
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  className="relative z-10 w-14 h-14 rounded-full bg-gray-950 border-2 border-cyan-500 flex items-center justify-center cursor-pointer shadow-[0_0_20px_rgba(34,211,238,0.2)] overflow-hidden"
-                >
-                  {exp.logo ? (
-                    <img src={exp.logo} alt={exp.company} className="w-full h-full p-2 object-contain scale-150 bg-white" />
-                  ) : (
-                    <MapPin className="w-8 h-8 text-cyan-400" />
-                  )}
-                </motion.div>
-
-                <div 
-                  className={`absolute w-36 md:w-48 transition-all ${
-                    isMobile 
-                      ? (isLeft ? "left-20 text-left" : "right-20 text-right") 
-                      : (i % 2 === 0 ? "bottom-9 text-center" : "top-10 text-center")
-                  }`}
-                >
-                  <h4 className="text-white font-bold text-xs md:text-sm leading-tight">{exp.title}</h4>
-                  <p className="text-cyan-400 text-[10px] font-medium mt-1 uppercase">{exp.company}</p>
-                  <p className="text-white text-[10px] font-medium mt-1 uppercase">{exp.period}</p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {active && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            style={isMobile ? {
-              position: 'fixed',
-              bottom: '20px',
-              left: '20px',
-              right: '20px',
-              zIndex: 9999
-            } : {
-              position: 'fixed',
-              left: mousePos.x + 25,
-              top: mousePos.y + 25,
-              pointerEvents: 'none',
-              zIndex: 9999
-            }}
-            className="p-6 bg-gray-900/95 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl ring-1 ring-white/10"
-          >
-            {isMobile && (
-              <button onClick={() => setActive(null)} className="absolute top-4 right-4 text-gray-400"><CloseIcon size={20}/></button>
-            )}
-            <span className="text-[10px] font-bold text-pink-500 uppercase tracking-widest block mb-2">{active.period}</span>
-            <h3 className="text-xl font-bold text-white mb-1">{active.title}</h3>
-            <p className="text-cyan-400 text-sm mb-4">{active.company}</p>
-            <div className="space-y-2">
-              {active.achievements.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-1.5 flex-shrink-0" />
-                  <p className="text-[11px] text-gray-400 leading-relaxed italic">{item}</p>
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </section>
+/** The avatar on the top step, holding a waving "Now" flag. Decorative. */
+function Climber() {
+  return (
+    <div aria-hidden className="relative mb-2 w-fit">
+      <svg viewBox="0 0 60 90" className="absolute -right-10 bottom-6 h-20 w-14 overflow-visible">
+        <line x1="8" y1="88" x2="8" y2="4" stroke="var(--ink)" strokeWidth="2.5" strokeLinecap="round" />
+        <path
+          d="M9 6 Q24 0 36 6 T58 8 V30 Q46 24 34 30 T9 28 Z"
+          fill="var(--fill)"
+          className="origin-left animate-[flag_1.6s_ease-in-out_infinite] [transform-box:fill-box]"
+        />
+        <text x="16" y="21" fontSize="9" fontWeight="800" fill="var(--on-fill)" fontFamily="var(--font-display)">
+          NOW
+        </text>
+      </svg>
+      <Avatar badge={false} size="size-20" />
+    </div>
   );
 }

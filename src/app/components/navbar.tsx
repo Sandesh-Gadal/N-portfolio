@@ -1,137 +1,126 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-// import { Menu, X, Sun, Moon, Zap } from 'lucide-react';
-import { Menu, X } from 'lucide-react';
-// import { Button } from './ui/button';
-
-interface NavbarProps {
-  theme: 'dark' | 'light' | 'neon';
-  onThemeChange: (theme: 'dark' | 'light' | 'neon') => void;
-}
+import { useEffect, useState } from 'react';
+import { Command, Menu, Moon, Sun, X } from 'lucide-react';
+import { CommandMenu } from './command-menu';
+import { useActiveSection, useTheme } from '../lib/hooks';
 
 const navItems = [
-  { label: 'Home', href: '#home' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Blog', href: '#blog' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' }
+  { label: 'Work', id: 'work' },
+  { label: 'Experience', id: 'experience' },
+  { label: 'Toolbox', id: 'toolbox' },
+  { label: 'Writing', id: 'writing' },
+  { label: 'About', id: 'about' },
+  { label: 'Contact', id: 'contact' }
 ];
 
-export function Navbar({}: NavbarProps) {
-  const [isOpen, setIsOpen] = useState(false);
+const sectionIds = navItems.map((item) => item.id);
+
+export function Navbar() {
+  const [open, setOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const active = useActiveSection(sectionIds);
+  const { theme, toggle } = useTheme();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      setIsOpen(false);
-    }
-  };
-
-  // const cycleTheme = () => {
-  //   const themes: Array<'dark' | 'light' | 'neon'> = ['dark', 'light', 'neon'];
-  //   const currentIndex = themes.indexOf(theme);
-  //   const nextIndex = (currentIndex + 1) % themes.length;
-  //   onThemeChange(themes[nextIndex]);
-  // };
-
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-gray-900/80 backdrop-blur-xl border-b border-gray-800/50 shadow-lg'
-          : 'bg-transparent'
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-colors ${
+        scrolled || open ? 'border-line-strong bg-paper' : 'border-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <motion.div
-            className="flex items-center gap-2 cursor-pointer"
-            whileHover={{ scale: 1.05 }}
-            onClick={() => scrollToSection('#home')}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:rounded-lg focus:bg-signal focus:px-4 focus:py-2 focus:font-semibold focus:text-on-signal"
+      >
+        Skip to content
+      </a>
+
+      <nav aria-label="Primary" className="page flex h-16 items-center justify-between gap-4">
+        <a href="#top" onClick={() => setOpen(false)} aria-label="Sandesh Gadal, back to top" className="flex items-center gap-2.5">
+          <span className="grid size-8 place-items-center rounded-md bg-screen font-display text-sm font-bold text-trace">SG</span>
+          <span className="tag hidden text-foreground sm:inline">Sandesh Gadal</span>
+        </a>
+
+        <ul className="hidden items-center gap-1 lg:flex">
+          {navItems.map((item) => {
+            const isActive = active === item.id;
+            return (
+              <li key={item.id}>
+                <a
+                  href={`#${item.id}`}
+                  aria-current={isActive ? 'true' : undefined}
+                  className={`flex items-center gap-2 rounded-md px-3 py-2 font-display text-[13px] font-semibold uppercase tracking-wider transition-colors ${
+                    isActive ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  <span className={`led size-1.5 ${isActive ? 'led-signal' : 'led-off'}`} aria-hidden />
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setPaletteOpen(true)}
+            aria-label="Open command menu"
+            className="key key-plain hidden h-9 px-2.5 text-[11px] sm:inline-flex"
           >
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-500 flex items-center justify-center font-bold text-white shadow-lg shadow-cyan-500/30">
-              SG
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent hidden sm:block">
-              Sandesh Gadal
-            </span>
-          </motion.div>
-
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
-            {navItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => scrollToSection(item.href)}
-                className="text-gray-300 hover:text-cyan-400 transition-colors text-sm font-medium"
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Theme Toggle & Mobile Menu */}
-          <div className="flex items-center gap-4">
-            {/* <Button
-              size="sm"
-              variant="outline"
-              onClick={cycleTheme}
-              className="border-gray-700/50 bg-gray-800/50 hover:bg-gray-700/50 text-gray-300"
-            >
-              {theme === 'dark' && <Moon className="w-4 h-4" />}
-              {theme === 'light' && <Sun className="w-4 h-4" />}
-              {theme === 'neon' && <Zap className="w-4 h-4" />}
-            </Button> */}
-
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="lg:hidden text-gray-300 hover:text-cyan-400 transition-colors"
-            >
-              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
+            <Command className="size-3.5" aria-hidden />K
+          </button>
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            className="key key-plain size-9 px-0"
+          >
+            {theme === 'dark' ? <Sun className="size-4" /> : <Moon className="size-4" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => setOpen((o) => !o)}
+            aria-expanded={open}
+            aria-controls="mobile-nav"
+            aria-label={open ? 'Close menu' : 'Open menu'}
+            className="key key-plain size-9 px-0 lg:hidden"
+          >
+            {open ? <X className="size-4" /> : <Menu className="size-4" />}
+          </button>
         </div>
+      </nav>
 
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden overflow-hidden"
-            >
-              <div className="py-4 space-y-2">
-                {navItems.map((item) => (
-                  <button
-                    key={item.label}
-                    onClick={() => scrollToSection(item.href)}
-                    className="block w-full text-left px-4 py-3 rounded-lg text-gray-300 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all"
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.nav>
+      <CommandMenu open={paletteOpen} onOpenChange={setPaletteOpen} theme={theme} onToggleTheme={toggle} />
+
+      {open && (
+        <ul id="mobile-nav" className="page grid pb-4 lg:hidden">
+          {navItems.map((item) => (
+            <li key={item.id} className="border-t border-line">
+              <a
+                href={`#${item.id}`}
+                onClick={() => setOpen(false)}
+                className="flex items-baseline justify-between py-3.5"
+              >
+                <span className="display text-3xl">{item.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </header>
   );
 }

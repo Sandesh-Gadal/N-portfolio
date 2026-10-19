@@ -1,10 +1,269 @@
+@import './fonts.css';
 @import './theme.css';
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.theme-dark *));
 
-@theme {
-  /* This maps your tailwind "surface" color to the CSS variable */
-  --color-app-bg: var(--background);
-  --color-app-text: var(--foreground);
-  --color-app-primary: var(--primary);
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-ring: var(--ring);
+
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-ink: var(--ink);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
+  --color-on-signal: var(--on-signal);
+  --color-led: var(--led);
+  --color-led-off: var(--led-off);
+  --color-screen: var(--screen);
+  --color-screen-2: var(--screen-2);
+  --color-screen-line: var(--screen-line);
+  --color-on-screen: var(--on-screen);
+  --color-on-screen-muted: var(--on-screen-muted);
+  --color-trace: var(--trace);
+  --color-soft: var(--soft);
+  --color-fill: var(--fill);
+  --color-on-fill: var(--on-fill);
+  --color-violet: var(--violet);
+
+  --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Schibsted Grotesk', 'Hanken Grotesk', ui-sans-serif, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --animate-pulse-led: pulse-led 2.4s ease-in-out infinite;
+  --animate-orbit: orbit 90s linear infinite;
+  --animate-orbit-rev: orbit 90s linear infinite reverse;
+  --animate-float: float 5s ease-in-out infinite;
+  --animate-scroll-cue: scroll-cue 1.8s ease-in-out infinite;
+  --animate-progress: progress var(--progress-duration, 6s) linear forwards;
+}
+
+@keyframes progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes flag {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(-4deg) scaleX(0.94); }
+}
+
+@keyframes scroll-cue {
+  0% { transform: translateY(0); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(18px); opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes orbit {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse-led {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+/* Avatar: blink, breathe, wave (coordinates are in the 160×160 viewBox) */
+@keyframes av-blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  95.5% { transform: scaleY(0.08); }
+}
+@keyframes av-breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1.4px); }
+}
+@keyframes av-wave {
+  0%, 60%, 100% { transform: rotate(0deg); }
+  10%, 30% { transform: rotate(-16deg); }
+  20%, 40% { transform: rotate(10deg); }
+}
+
+.av-blink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: av-blink 4.6s infinite;
+}
+.av-breathe { animation: av-breathe 3.6s ease-in-out infinite; }
+.av-wave {
+  transform-box: view-box;
+  transform-origin: 124px 150px;
+  animation: av-wave 2.8s ease-in-out infinite;
+}
+.av-head {
+  transform-box: view-box;
+  transform-origin: 80px 110px;
+  transform: rotate(var(--av-tilt, 0deg));
+  transition: transform 0.35s ease-out;
+}
+.av-pupil {
+  transform: translate(var(--av-px, 0px), var(--av-py, 0px));
+  transition: transform 0.2s ease-out;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+
+  ::selection {
+    background: var(--fill);
+    color: var(--on-fill);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  section[id] { scroll-margin-top: 5.5rem; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+}
+
+@layer components {
+  .page {
+    @apply mx-auto w-full max-w-7xl px-4 md:px-8;
+  }
+
+  /* Angular hardware-panel display face. */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+
+  /* Small uppercase label. */
+  .tag {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    @apply text-muted-foreground;
+  }
+
+  .meta {
+    @apply font-mono text-xs text-muted-foreground;
+  }
+
+  /* Page panel. Hairline border, no shadow. */
+  .panel {
+    @apply relative rounded-2xl border border-line-strong bg-panel;
+  }
+
+  /* Charcoal surface, same in both themes. */
+  .screen {
+    @apply relative rounded-2xl bg-screen text-on-screen;
+    box-shadow: inset 0 0 0 1px var(--screen-line);
+  }
+
+  /* Status LED. The only element allowed a (tight) glow. */
+  .led {
+    @apply inline-block size-2 shrink-0 rounded-full bg-led;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--led) 22%, transparent), 0 0 8px var(--led);
+  }
+  .led-signal {
+    @apply bg-signal;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--signal) 22%, transparent), 0 0 8px var(--signal);
+  }
+  .led-off {
+    @apply bg-led-off;
+    box-shadow: none;
+  }
+
+  /* Small red ring, used as a bullet and a marker. */
+  .via {
+    @apply inline-block size-2.5 shrink-0 rounded-full border-2 border-signal;
+  }
+
+  /* Hardware key: flat top, darker bottom edge, presses down. */
+  .key {
+    @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg px-5 text-sm font-semibold whitespace-nowrap disabled:pointer-events-none disabled:opacity-50;
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+    border: 1px solid var(--line-strong);
+    border-bottom-width: 3px;
+    transition: transform 0.12s ease, border-bottom-width 0.12s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+  .key:active {
+    transform: translateY(2px);
+    border-bottom-width: 1px;
+  }
+  .key-signal {
+    @apply bg-fill text-on-fill;
+    border-color: color-mix(in srgb, var(--fill) 55%, black);
+  }
+  .key-signal:hover { background-color: color-mix(in srgb, var(--fill) 85%, white); }
+  .key-plain {
+    @apply bg-panel text-foreground hover:bg-panel-2;
+  }
+  .key-screen {
+    @apply bg-screen-2 text-on-screen hover:bg-screen;
+    border-color: var(--screen-line);
+  }
+
+  /* Stack chip. */
+  .pin {
+    @apply inline-flex items-center rounded-md border border-line-strong px-2 py-1 text-xs font-medium;
+  }
+
+  .link {
+    @apply underline decoration-1 decoration-line-strong underline-offset-4 transition-colors hover:text-signal-ink hover:decoration-signal;
+  }
 }

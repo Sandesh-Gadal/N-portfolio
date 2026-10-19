@@ -1,114 +1,107 @@
-@custom-variant dark (&:is(.dark *));
+/*
+ * "Midnight & Lime" — design tokens. Dark-first.
+ * Deep navy-black page, crisp white text, electric-lime accent, soft violet secondary.
+ * Light mode is off-white with the same ink and lime; small lime text darkens to stay legible.
+ * The inline script in index.html sets `.theme-dark` on <html> before first paint
+ * (dark unless the visitor chose light).
+ *
+ * --signal is the accent for text and marks; --fill is the lime used for filled shapes
+ * (primary buttons, the hero orb, badges) and always carries --on-fill (ink) text.
+ *
+ * Shadcn token names are kept so src/app/components/ui/ primitives render
+ * correctly. Brand tokens are documented in .claude/docs/design-system.md.
+ */
 
 :root {
-  --font-size: 16px;
-  --background: #ffffff;
-  --foreground: oklch(0.145 0 0);
-  --card: #ffffff;
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.95 0.0058 264.53);
-  --secondary-foreground: #030213;
-  --muted: #ececf0;
-  --muted-foreground: #717182;
-  --accent: #e9ebef;
-  --accent-foreground: #030213;
-  --destructive: #d4183d;
+  color-scheme: light;
+
+  /* Page */
+  --paper: #f3f4ef;
+  --panel: #ffffff;
+  --panel-2: #e8eae3;
+  --ink: #0b0e14;
+  --ink-muted: #565c66;
+  --line: rgba(11, 14, 20, 0.1);
+  --line-strong: rgba(11, 14, 20, 0.22);
+
+  /* Accent */
+  --fill: #c6f432;           /* lime fills, both themes */
+  --on-fill: #0b0e14;
+  --signal: #4c7a00;         /* lime-family text/marks on the light page (AA) */
+  --signal-ink: #426b00;     /* small accent text */
+  --on-signal: #0b0e14;
+  --violet: #6a5cf0;         /* secondary, sparingly */
+  --soft: #e6f4c2;
+  --led: #1fae62;            /* "on / live / current" only */
+  --led-off: rgba(11, 14, 20, 0.18);
+
+  /* Dark surfaces (same in both themes) */
+  --screen: #10141d;
+  --screen-2: #181e2b;
+  --screen-line: rgba(238, 241, 246, 0.1);
+  --on-screen: #eef1f6;
+  --on-screen-muted: #9aa3b2;
+  --trace: #c6f432;          /* accent on dark surfaces */
+
+  /* Avatar illustration (same in both themes) */
+  --av-skin: #d8a67f;
+  --av-skin-shade: #b88460;
+  --av-hair: #1c1715;
+  --av-suit: #4a5751;
+  --av-suit-shade: #38433e;
+  --av-shirt: #f3f1ec;
+  --av-tie: #8e8892;
+  --av-tie-shade: #6f6973;
+  --av-eye: #fbfaf7;
+
+  /* Shadcn mapping */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--panel);
+  --card-foreground: var(--ink);
+  --popover: var(--panel);
+  --popover-foreground: var(--ink);
+  --primary: var(--fill);
+  --primary-foreground: var(--on-fill);
+  --secondary: var(--panel-2);
+  --secondary-foreground: var(--ink);
+  --muted: var(--panel-2);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--panel-2);
+  --accent-foreground: var(--ink);
+  --destructive: #d23a2a;
   --destructive-foreground: #ffffff;
-  --border: rgba(0, 0, 0, 0.1);
-  --input: transparent;
-  --input-background: #f3f3f5;
-  --switch-background: #cbced4;
+  --border: var(--line);
+  --input: var(--line-strong);
+  --input-background: var(--panel);
+  --switch-background: var(--line-strong);
+  --ring: var(--violet);
+  --radius: 0.75rem;
+
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: #030213;
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
 }
 
-.dark,
-.theme-dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
-}
+:root.theme-dark {
+  color-scheme: dark;
 
-/* .theme-light {
-  --background: #f8f9fa;
-  --foreground: #1a1a1a;
-}
+  --paper: #0b0e14;
+  --panel: #121722;
+  --panel-2: #1a2030;
+  --ink: #eef1f6;
+  --ink-muted: #9aa3b2;
+  --line: rgba(238, 241, 246, 0.09);
+  --line-strong: rgba(238, 241, 246, 0.2);
 
-.theme-neon {
-  --background: #000000;
-  --foreground: #00ff88;
-} */
+  --signal: #c6f432;
+  --signal-ink: #d3f75c;
+  --violet: #8b7cff;
+  --soft: #1a2312;
+  --led: #3ee38a;
+  --led-off: rgba(238, 241, 246, 0.16);
 
-.theme-light {
-  --background: #ffffff;
-  --foreground: #0f172a;      /* Deep Navy/Slate - much easier to read */
-  --card: #f8fafc;
-  --card-foreground: #0f172a;
-  --primary: #2563eb;        /* Professional Blue */
-  --primary-foreground: #ffffff;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
-  --accent: #f1f5f9;
-  --accent-foreground: #0f172a;
-}
+  --screen: #121826;
+  --screen-2: #1a2132;
 
-.theme-neon {
-  --background: #000000;
-  --foreground: #00ff88; /* Neon Green text */
-  --primary: #00ff88;
-  --card: #050505;
-  --border: #00ff88;
-  --muted: #003311;
-  --accent: #bc13fe;     /* Neon Purple for contrast */
+  --destructive: #ff7a6c;
 }
