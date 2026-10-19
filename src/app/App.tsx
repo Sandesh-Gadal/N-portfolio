@@ -1,4 +1,5 @@
 import { MotionConfig } from 'motion/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { Navbar } from './components/navbar';
 import { HeroSection } from './components/hero-section';
 import { ProjectsSection } from './components/projects-section';
@@ -25,6 +26,7 @@ export default function App() {
         <ContactSection />
       </main>
       <Footer />
+      <SpeedInsights />
     </MotionConfig>
   );
 }
