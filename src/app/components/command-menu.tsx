@@ -88,7 +88,7 @@ export function CommandMenu({ open, onOpenChange, theme, onToggleTheme }: Props)
           </CommandItem>
           <CommandItem onSelect={run(() => openUrl(profile.resume))}>
             <Download />
-            Open résumé (PDF)
+            Open resume (PDF)
           </CommandItem>
           <CommandItem onSelect={run(onToggleTheme)}>
             {theme === 'dark' ? <Sun /> : <Moon />}

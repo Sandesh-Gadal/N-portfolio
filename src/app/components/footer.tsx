@@ -17,12 +17,12 @@ export function Footer() {
               ['GitHub', profile.links.github],
               ['LinkedIn', profile.links.linkedin],
               ['Email', `mailto:${profile.email}`],
-              ['Résumé', profile.resume]
+              ['Resume', profile.resume]
             ].map(([label, href]) => (
               <li key={label}>
                 <a
                   href={href}
-                  {...(href.startsWith('http') || label === 'Résumé' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  {...(href.startsWith('http') || label === 'Resume' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   className="link"
                 >
                   {label}

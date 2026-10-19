@@ -70,7 +70,7 @@ export function ContactSection() {
             <div className="mt-10 flex flex-wrap items-center gap-3">
               <a
                 href={`mailto:${profile.email}`}
-                className="break-all font-mono text-xl underline decoration-signal decoration-1 underline-offset-8 transition-colors hover:text-signal md:text-2xl"
+                className="break-all font-mono text-[clamp(0.95rem,4.6vw,1.25rem)] underline decoration-signal decoration-1 underline-offset-8 transition-colors hover:text-signal md:text-2xl"
               >
                 {profile.email}
               </a>

@@ -59,7 +59,7 @@ export function AboutSection() {
 
           <div className="mt-8 flex flex-wrap gap-2">
             <a href={profile.resume} download className="key key-signal">
-              Download résumé
+              Download resume
             </a>
             {[
               ['GitHub', profile.links.github],

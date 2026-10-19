@@ -25,6 +25,7 @@ export function ProjectsSection() {
   const reduced = useReducedMotion();
   const rootRef = useRef<HTMLDivElement>(null);
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   const playing = !reduced && !userPaused && !hovering && inView && liveSlug === null;
 
@@ -34,6 +35,13 @@ export function ProjectsSection() {
     setActive(i);
     setLiveSlug(null);
     if (focus) tabs.current[i]?.focus();
+  };
+
+  // Picking a thumbnail far below the project (small screens) brings the project back into view.
+  const pick = (i: number) => {
+    go(i);
+    const top = panelRef.current?.getBoundingClientRect().top ?? 0;
+    if (top < 64) panelRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
   };
 
   // Advance on a timer while playing.
@@ -98,14 +106,16 @@ export function ProjectsSection() {
           onBlur={(e) => {
             if (!e.currentTarget.contains(e.relatedTarget as Node)) setHovering(false);
           }}
+          className="flex flex-col"
         >
           {/* The one project on show */}
           <div
+            ref={panelRef}
             role="tabpanel"
             id="work-panel"
             aria-labelledby={`tab-${project.slug}`}
             aria-live={playing ? 'off' : 'polite'}
-            className="relative overflow-hidden"
+            className="relative scroll-mt-24 overflow-hidden"
           >
             <AnimatePresence mode="wait" initial={false} custom={direction}>
               <motion.div
@@ -115,114 +125,117 @@ export function ProjectsSection() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={reduced ? undefined : { opacity: 0, x: -60 * direction }}
                 transition={{ duration: reduced ? 0 : 0.45, ease: [0.22, 1, 0.36, 1] }}
-                className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12"
+                className="grid grid-cols-1 items-center gap-6 lg:grid-cols-12 lg:gap-10"
               >
-                <div className="lg:col-span-7">
+                {/* Capped by viewport height so the card and the thumbnails fit on one laptop screen */}
+                <div className="mx-auto w-full max-w-[calc(52svh*1.6)] lg:col-span-6">
                   <Card
                     project={project}
                     live={liveSlug === project.slug}
                     onToggleLive={() => setLiveSlug((s) => (s === project.slug ? null : project.slug))}
                   />
                 </div>
-                <div className="lg:col-span-5">
+                <div className="lg:col-span-6">
                   <Details project={project} />
                 </div>
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Thumbnail carousel */}
-          <div className="mt-10 flex items-center justify-between gap-4">
-            <p className="tag">
-              {project.title}{' '}
-              <span className="text-muted-foreground/70">
-                · {active + 1} of {n}
-              </span>
-            </p>
-            <div className="flex items-center gap-2">
-              {!reduced && (
+          {/* Thumbnail carousel: above the project on small screens, so a tap changes what is right below it */}
+          <div className="order-first mb-6 lg:order-none lg:mb-0">
+            <div className="flex items-center justify-between gap-4 lg:mt-8">
+              <p className="tag min-w-0 truncate">
+                {project.title}{' '}
+                <span className="text-muted-foreground/70">
+                  · {active + 1} of {n}
+                </span>
+              </p>
+              <div className="flex items-center gap-2">
+                {!reduced && (
+                  <button
+                    type="button"
+                    onClick={() => setUserPaused((p) => !p)}
+                    aria-label={userPaused ? 'Play slideshow' : 'Pause slideshow'}
+                    className="key key-plain size-9 px-0"
+                  >
+                    {userPaused ? <Play className="size-4" /> : <Pause className="size-4" />}
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={() => setUserPaused((p) => !p)}
-                  aria-label={userPaused ? 'Play slideshow' : 'Pause slideshow'}
+                  onClick={() => go(active - 1)}
+                  aria-label="Previous project"
                   className="key key-plain size-9 px-0"
                 >
-                  {userPaused ? <Play className="size-4" /> : <Pause className="size-4" />}
+                  <ChevronLeft className="size-4" />
                 </button>
-              )}
-              <button
-                type="button"
-                onClick={() => go(active - 1)}
-                aria-label="Previous project"
-                className="key key-plain size-9 px-0"
-              >
-                <ChevronLeft className="size-4" />
-              </button>
-              <button
-                type="button"
-                onClick={() => go(active + 1)}
-                aria-label="Next project"
-                className="key key-plain size-9 px-0"
-              >
-                <ChevronRight className="size-4" />
-              </button>
-            </div>
-          </div>
-
-          <div
-            role="tablist"
-            aria-label="Projects"
-            onKeyDown={onKeyDown}
-            className="mt-4 flex snap-x gap-3 overflow-x-auto pb-2"
-          >
-            {projects.map((p, i) => {
-              const selected = i === active;
-              return (
                 <button
-                  key={p.slug}
-                  ref={(el) => {
-                    tabs.current[i] = el;
-                  }}
-                  role="tab"
-                  id={`tab-${p.slug}`}
-                  aria-selected={selected}
-                  aria-controls="work-panel"
-                  tabIndex={selected ? 0 : -1}
-                  onClick={() => go(i)}
-                  className={`group relative w-52 shrink-0 snap-start overflow-hidden rounded-xl border text-left transition-colors md:w-auto md:flex-1 ${
-                    selected ? 'border-signal/60 bg-panel' : 'border-line-strong bg-panel/60 hover:bg-panel'
-                  }`}
+                  type="button"
+                  onClick={() => go(active + 1)}
+                  aria-label="Next project"
+                  className="key key-plain size-9 px-0"
                 >
-                  <span className="block aspect-video overflow-hidden border-b border-line">
-                    <img
-                      src={p.image}
-                      alt=""
-                      loading="lazy"
-                      className={`size-full object-cover object-top transition duration-500 group-hover:scale-105 ${
-                        selected ? '' : 'opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0'
-                      }`}
-                    />
-                  </span>
-                  <span className="flex items-center justify-between gap-2 px-3 py-2.5">
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-semibold">{p.title}</span>
-                      <span className="block truncate text-xs text-muted-foreground">{p.context}</span>
-                    </span>
-                    <span className={`led ${p.live ? '' : 'led-off'}`} aria-hidden />
-                  </span>
-                  {/* Time until the slideshow moves on */}
-                  {selected && (
-                    <span aria-hidden className="absolute inset-x-0 bottom-0 h-0.5 bg-line">
-                      <span
-                        key={`${active}-${playing}`}
-                        className={`block h-full origin-left bg-signal ${playing ? 'animate-progress' : 'scale-x-0'}`}
-                        style={{ ['--progress-duration' as string]: `${INTERVAL}ms` }}
+                  <ChevronRight className="size-4" />
+                </button>
+              </div>
+            </div>
+
+            <div
+              role="tablist"
+              aria-label="Projects"
+              onKeyDown={onKeyDown}
+              className="mt-4 flex snap-x gap-3 overflow-x-auto pb-2"
+            >
+              {projects.map((p, i) => {
+                const selected = i === active;
+                return (
+                  <button
+                    key={p.slug}
+                    ref={(el) => {
+                      tabs.current[i] = el;
+                    }}
+                    role="tab"
+                    id={`tab-${p.slug}`}
+                    aria-selected={selected}
+                    aria-controls="work-panel"
+                    tabIndex={selected ? 0 : -1}
+                    onClick={() => pick(i)}
+                    className={`group relative w-36 shrink-0 snap-start overflow-hidden rounded-lg border text-left transition-colors md:w-44 ${
+                      selected ? 'border-signal/60 bg-panel' : 'border-line-strong bg-panel/60 hover:bg-panel'
+                    }`}
+                  >
+                    <span className="block aspect-video overflow-hidden border-b border-line">
+                      <img
+                        src={p.image}
+                        alt=""
+                        loading="lazy"
+                        className={`size-full object-cover object-top transition duration-500 group-hover:scale-105 ${
+                          selected ? '' : 'opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0'
+                        }`}
                       />
                     </span>
-                  )}
-                </button>
-              );
-            })}
+                    <span className="flex items-center justify-between gap-2 px-2.5 py-2">
+                      <span className="min-w-0">
+                        <span className="block truncate text-xs font-semibold">{p.title}</span>
+                        <span className="block truncate text-[11px] text-muted-foreground">{p.context}</span>
+                      </span>
+                      <span className={`led ${p.live ? '' : 'led-off'}`} aria-hidden />
+                    </span>
+                    {/* Time until the slideshow moves on */}
+                    {selected && (
+                      <span aria-hidden className="absolute inset-x-0 bottom-0 h-0.5 bg-line">
+                        <span
+                          key={`${active}-${playing}`}
+                          className={`block h-full origin-left bg-signal ${playing ? 'animate-progress' : 'scale-x-0'}`}
+                          style={{ ['--progress-duration' as string]: `${INTERVAL}ms` }}
+                        />
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </Reveal>
@@ -279,7 +292,7 @@ function Details({ project }: { project: Project }) {
   return (
     <article>
       <p className="tag">{project.context}</p>
-      <h3 className="display mt-2 text-3xl md:text-4xl">{project.title}</h3>
+      <h3 className="display mt-2 text-2xl md:text-3xl">{project.title}</h3>
       <p className="mt-3 leading-relaxed text-muted-foreground">{project.summary}</p>
 
       <p className="tag mt-6">What I did</p>

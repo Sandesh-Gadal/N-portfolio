@@ -1,26 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-  type MotionValue
-} from 'motion/react';
-import {
-  AppWindow,
-  ArrowDown,
-  ArrowUpRight,
-  Code,
-  Cpu,
-  Database,
-  Milk,
-  Nfc,
-  Server,
-  Smartphone,
-  type LucideIcon
-} from 'lucide-react';
+import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react';
+import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import { profile } from '../data/profile';
 import { experience } from '../data/experience';
 import { useGreeting, useLocalTime, useVisitCount } from '../lib/hooks';
@@ -64,7 +44,6 @@ export function HeroSection() {
   return (
     <section ref={ref} id="top" className="relative overflow-hidden">
       <Backdrop />
-      <FloatingIcons progress={scrollYProgress} />
       <Corners time={time} />
 
       <div className="page relative flex flex-col items-center pb-16 pt-24 text-center md:min-h-svh md:justify-center md:pb-12 md:pt-24">
@@ -100,7 +79,7 @@ export function HeroSection() {
               See my work <ArrowDown className="size-4" aria-hidden />
             </a>
             <a href={profile.resume} target="_blank" rel="noopener noreferrer" className="key key-plain">
-              Résumé <ArrowUpRight className="size-4" aria-hidden />
+              Resume <ArrowUpRight className="size-4" aria-hidden />
             </a>
           </motion.div>
         </motion.div>
@@ -117,84 +96,6 @@ function Backdrop() {
     <div aria-hidden className="pointer-events-none absolute inset-0">
       <div className="absolute inset-0 bg-[linear-gradient(var(--line)_1px,transparent_1px),linear-gradient(90deg,var(--line)_1px,transparent_1px)] bg-size-[64px_64px] [mask-image:radial-gradient(ellipse_60%_55%_at_50%_42%,black_25%,transparent_75%)]" />
     </div>
-  );
-}
-
-/** Small tiles for things he builds, scattered in the hero's empty sides. */
-const ICONS: { Icon: LucideIcon; x: number; y: number; depth: number; accent?: boolean }[] = [
-  { Icon: Database, x: 21, y: 32, depth: 0.7 },
-  { Icon: Server, x: 11, y: 48, depth: 1 },
-  { Icon: AppWindow, x: 22, y: 61, depth: 0.8 },
-  { Icon: Code, x: 12, y: 72, depth: 0.5 },
-  { Icon: Cpu, x: 79, y: 32, depth: 0.8, accent: true },
-  { Icon: Milk, x: 89, y: 48, depth: 0.6, accent: true },
-  { Icon: Nfc, x: 78, y: 61, depth: 1 },
-  { Icon: Smartphone, x: 88, y: 72, depth: 0.5 }
-];
-
-/**
- * Floating icon tiles (lg and up) for what he builds: data, servers, interfaces, code,
- * chips, the milk analysers, NFC and Android. They bob gently, drift toward the pointer
- * and move at different speeds on scroll, by depth. Decorative.
- */
-function FloatingIcons({ progress }: { progress: MotionValue<number> }) {
-  const reduced = useReducedMotion();
-  const px = useMotionValue(0);
-  const py = useMotionValue(0);
-  const sx = useSpring(px, { stiffness: 60, damping: 18 });
-  const sy = useSpring(py, { stiffness: 60, damping: 18 });
-
-  useEffect(() => {
-    if (reduced) return;
-    const onMove = (e: PointerEvent) => {
-      px.set(e.clientX / window.innerWidth - 0.5);
-      py.set(e.clientY / window.innerHeight - 0.5);
-    };
-    window.addEventListener('pointermove', onMove, { passive: true });
-    return () => window.removeEventListener('pointermove', onMove);
-  }, [reduced, px, py]);
-
-  return (
-    <div aria-hidden className="pointer-events-none absolute inset-0 hidden lg:block">
-      {ICONS.map((item, i) => (
-        <FloatingIcon key={i} {...item} index={i} sx={sx} sy={sy} progress={progress} reduced={Boolean(reduced)} />
-      ))}
-    </div>
-  );
-}
-
-function FloatingIcon({
-  Icon,
-  x,
-  y,
-  depth,
-  accent,
-  index,
-  sx,
-  sy,
-  progress,
-  reduced
-}: (typeof ICONS)[number] & {
-  index: number;
-  sx: MotionValue<number>;
-  sy: MotionValue<number>;
-  progress: MotionValue<number>;
-  reduced: boolean;
-}) {
-  const tx = useTransform(sx, (v) => (reduced ? 0 : v * -36 * depth));
-  const ty = useTransform([sy, progress], ([v, p]: number[]) => (reduced ? 0 : v * -28 * depth - p * 220 * depth));
-
-  return (
-    <motion.div style={{ left: `${x}%`, top: `${y}%`, x: tx, y: ty }} className="absolute">
-      <span
-        className={`grid size-12 -translate-x-1/2 -translate-y-1/2 animate-float place-items-center rounded-2xl border bg-panel/80 ${
-          accent ? 'border-signal/40 text-signal' : 'border-line-strong text-muted-foreground'
-        }`}
-        style={{ animationDelay: `${index * -0.7}s`, animationDuration: `${4 + (index % 3)}s` }}
-      >
-        <Icon className="size-5" strokeWidth={1.6} />
-      </span>
-    </motion.div>
   );
 }
 
