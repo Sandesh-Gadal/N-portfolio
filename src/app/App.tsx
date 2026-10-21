@@ -7,6 +7,7 @@ import { ExperienceSection } from './components/experience-section';
 import { SkillsSection } from './components/skills-section';
 import { WritingSection } from './components/writing-section';
 import { AboutSection } from './components/about-section';
+import { FaqSection } from './components/faq-section';
 import { ContactSection } from './components/contact-section';
 import { Footer } from './components/footer';
 
@@ -23,6 +24,7 @@ export default function App() {
         <SkillsSection />
         <WritingSection />
         <AboutSection />
+        <FaqSection />
         <ContactSection />
       </main>
       <Footer />
