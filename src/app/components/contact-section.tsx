@@ -33,6 +33,8 @@ export function ContactSection() {
     if (result.success) {
       formRef.current.reset();
       setStatus('sent');
+      // GTM: trigger on this custom event, mark it as a key event in GA4.
+      (window as Window & { dataLayer?: object[] }).dataLayer?.push({ event: 'contact_form_sent' });
     } else {
       setStatus('error');
     }
@@ -63,8 +65,9 @@ export function ContactSection() {
               Got a system <span className="block text-trace">to build?</span>
             </h2>
             <p className="mt-6 max-w-lg text-lg leading-relaxed text-on-screen-muted">
-              I'm open to backend and full-stack roles, and to freelance work on Laravel, APIs and databases. Tell me what
-              you're building; I usually reply within a day, Nepal time.
+              I'm open to full-time roles, contracts and freelance work on Laravel, APIs, databases and device
+              integrations, remote or on-site in Chitwan. Tell me what you're building; I usually reply within a day,
+              Nepal time.
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">

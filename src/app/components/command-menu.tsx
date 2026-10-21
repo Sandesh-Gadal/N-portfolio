@@ -21,6 +21,7 @@ const sections = [
   { label: 'Toolbox', id: 'toolbox' },
   { label: 'Writing', id: 'writing' },
   { label: 'About', id: 'about' },
+  { label: 'FAQ', id: 'faq' },
   { label: 'Contact', id: 'contact' }
 ];
 

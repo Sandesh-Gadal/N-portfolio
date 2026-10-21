@@ -25,7 +25,8 @@ export function AboutSection() {
         <Reveal className="lg:col-span-7">
           <div className="space-y-5 text-lg leading-relaxed md:text-xl">
             <p>
-              I started out repairing computers at a shop in Chitwan. That job taught me the habit I still work by:{' '}
+              I started out repairing computers at Chitwan Computer, a shop in Chitwan whose website I later built.
+              That job taught me the habit I still work by:{' '}
               <span className="font-semibold text-signal-ink">trace the fault to its source</span> before touching
               anything.
             </p>

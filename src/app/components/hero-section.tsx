@@ -57,7 +57,7 @@ export function HeroSection() {
               Sandesh Gadal<span className="text-signal">.</span>
             </span>
             <span className="mt-4 block max-w-xl text-balance text-[clamp(1.1rem,1.8vw,1.4rem)] font-medium leading-snug text-muted-foreground">
-              Full-stack developer, from the database to the{' '}
+              Backend &amp; IoT developer, from the database to the{' '}
               <span className="font-display font-semibold italic text-signal-ink">device</span>.
             </span>
           </motion.h1>

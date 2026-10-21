@@ -88,7 +88,7 @@ export function ProjectsSection() {
           Things I've <em>shipped</em>
         </>
       }
-      lede="A college journal, a local storefront, a farming app and an NFC attendance system. Each one is live or open source."
+      lede="Laravel backends with React or Android on top: a farming app, a college journal platform, a storefront for the shop where I started, and an NFC attendance system."
       aside={
         <Avatar
           say="The NFC one is where software met hardware for me."
@@ -245,7 +245,7 @@ export function ProjectsSection() {
 
 /** Browser-window card: window bar with the real host, then the screenshot (or the live site). */
 function Card({ project, live, onToggleLive }: { project: Project; live: boolean; onToggleLive: () => void }) {
-  const host = project.live ? new URL(project.live).host : project.source?.replace('https://', '');
+  const host = project.live ? new URL(project.live).host : (project.source?.replace('https://', '') ?? 'offline');
   const canPreview = Boolean(project.preview && project.live);
 
   return (
