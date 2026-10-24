@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { ArrowRight, Copy, Download, Github, Linkedin, Mail, Moon, Sun } from 'lucide-react';
 import {
   CommandDialog,
@@ -10,9 +9,6 @@ import {
 } from './ui/command';
 import { profile } from '../data/profile';
 import type { Theme } from '../lib/hooks';
-
-/** Dispatch this from anywhere (e.g. the footer status bar) to open the palette. */
-export const OPEN_COMMAND_EVENT = 'open-command-menu';
 
 const sections = [
   { label: 'Home', id: 'top' },
@@ -32,24 +28,8 @@ type Props = {
   onToggleTheme: () => void;
 };
 
-export function CommandMenu({ open, onOpenChange, theme, onToggleTheme }: Props) {
-  // ⌘K / Ctrl+K toggles; custom event opens.
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        onOpenChange(!open);
-      }
-    };
-    const onOpen = () => onOpenChange(true);
-    window.addEventListener('keydown', onKey);
-    window.addEventListener(OPEN_COMMAND_EVENT, onOpen);
-    return () => {
-      window.removeEventListener('keydown', onKey);
-      window.removeEventListener(OPEN_COMMAND_EVENT, onOpen);
-    };
-  }, [open, onOpenChange]);
-
+/** The ⌘K palette. Lazy-loaded by the navbar on first open; the shortcut lives in lib/command.ts. */
+export default function CommandMenu({ open, onOpenChange, theme, onToggleTheme }: Props) {
   const run = (fn: () => void) => () => {
     onOpenChange(false);
     fn();

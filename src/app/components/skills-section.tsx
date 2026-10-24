@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react';
+import { AnimatePresence, motion, useScroll, useTransform, type MotionValue } from 'motion/react';
 import { AppWindow, Container, Cpu, Database, Server, type LucideIcon } from 'lucide-react';
 import { layers, skills, type Layer } from '../data/skills';
 import { gsap, ScrollTrigger } from '../lib/gsap';
 import { Reveal, Section } from './section';
+import { useReducedMotion } from '../lib/hooks';
+import { whenIdle } from '../lib/idle';
 
 type Usage = 'Daily' | 'Comfortable' | 'Learning';
 
@@ -40,10 +42,11 @@ export function SkillsSection() {
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const { scrollYProgress } = useScroll({ target: stageRef, offset: ['start end', 'center center'] });
   // Plates are bigger from md up, so they need more room between them.
-  const [wide, setWide] = useState(() => window.matchMedia('(min-width: 768px)').matches);
+  const [wide, setWide] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)');
     const onChange = () => setWide(mq.matches);
+    onChange();
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
   }, []);
@@ -56,29 +59,35 @@ export function SkillsSection() {
     if (!pin) return;
     const n = layers.length;
     const mm = gsap.matchMedia();
-    mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
-      setScrollMode(true);
-      triggerRef.current = ScrollTrigger.create({
-        trigger: pin,
-        start: 'center center',
-        end: `+=${n * 340}`,
-        pin: true,
-        snap: {
-          snapTo: (v) => Math.min(1, Math.max(0, (Math.floor(v * n) + 0.5) / n)),
-          duration: { min: 0.2, max: 0.5 },
-          delay: 0.15
-        },
-        onUpdate: (self) => {
-          const i = Math.min(n - 1, Math.floor(self.progress * n));
-          setActive((prev) => (prev === i ? prev : i));
-        }
+    // Pinning measures layout and adds a spacer below the fold; wait for idle so it doesn't block startup.
+    const cancel = whenIdle(() => {
+      mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
+        setScrollMode(true);
+        triggerRef.current = ScrollTrigger.create({
+          trigger: pin,
+          start: 'center center',
+          end: `+=${n * 340}`,
+          pin: true,
+          snap: {
+            snapTo: (v) => Math.min(1, Math.max(0, (Math.floor(v * n) + 0.5) / n)),
+            duration: { min: 0.2, max: 0.5 },
+            delay: 0.15
+          },
+          onUpdate: (self) => {
+            const i = Math.min(n - 1, Math.floor(self.progress * n));
+            setActive((prev) => (prev === i ? prev : i));
+          }
+        });
+        return () => {
+          triggerRef.current = null;
+          setScrollMode(false);
+        };
       });
-      return () => {
-        triggerRef.current = null;
-        setScrollMode(false);
-      };
     });
-    return () => mm.revert();
+    return () => {
+      cancel();
+      mm.revert();
+    };
   }, []);
 
   /** In scroll mode, selecting a layer scrolls to its spot; otherwise it just selects. */

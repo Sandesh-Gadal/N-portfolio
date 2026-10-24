@@ -1,40 +1,70 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { fetchVisitCount } from '../services/visits';
+import { whenIdle } from './idle';
 
 export type Theme = 'light' | 'dark';
 
 const THEME_KEY = 'theme';
 
+const themeListeners = new Set<() => void>();
+
+const readTheme = (): Theme => (document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light');
+
+const subscribeTheme = (listener: () => void) => {
+  themeListeners.add(listener);
+  return () => themeListeners.delete(listener);
+};
+
 /**
- * Light/dark theme. index.html applies the initial class before paint;
- * this hook reads it back and keeps <html> + localStorage in sync.
+ * Light/dark theme. index.html applies the initial class before paint; the class on <html> is the
+ * source of truth. The prerendered HTML assumes dark (the default), and React swaps to the real
+ * value after hydration without a mismatch.
  */
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>(() =>
-    document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light'
-  );
+  const theme = useSyncExternalStore(subscribeTheme, readTheme, () => 'dark' as Theme);
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('theme-dark', theme === 'dark');
+  const toggle = () => {
+    const next: Theme = readTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.classList.toggle('theme-dark', next === 'dark');
     try {
-      localStorage.setItem(THEME_KEY, theme);
+      localStorage.setItem(THEME_KEY, next);
     } catch {
       // Storage can be unavailable (private mode); the theme still applies for this visit.
     }
-  }, [theme]);
+    themeListeners.forEach((listener) => listener());
+  };
 
-  const toggle = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
   return { theme, toggle };
 }
 
-/** Current wall-clock time in a given IANA time zone, refreshed every 30s. */
+const REDUCED_MOTION = '(prefers-reduced-motion: reduce)';
+
+const subscribeReducedMotion = (listener: () => void) => {
+  const mq = window.matchMedia(REDUCED_MOTION);
+  mq.addEventListener('change', listener);
+  return () => mq.removeEventListener('change', listener);
+};
+
+/**
+ * Like motion's useReducedMotion, but false while hydrating so the client's first render matches
+ * the prerendered HTML; React then re-renders with the visitor's real preference.
+ */
+export function useReducedMotion() {
+  return useSyncExternalStore(subscribeReducedMotion, () => window.matchMedia(REDUCED_MOTION).matches, () => false);
+}
+
+/**
+ * Current wall-clock time in a given IANA time zone, refreshed every 30s.
+ * "--:--" until mounted, so the prerendered HTML doesn't carry the build time.
+ */
 export function useLocalTime(timeZone: string) {
   const format = () =>
     new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone }).format(new Date());
 
-  const [time, setTime] = useState(format);
+  const [time, setTime] = useState('--:--');
 
   useEffect(() => {
+    setTime(format());
     const id = setInterval(() => setTime(format()), 30_000);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -49,9 +79,11 @@ export function useVisitCount() {
 
   useEffect(() => {
     let alive = true;
-    fetchVisitCount().then((value) => alive && setCount(value));
+    // Not needed for first paint; keep it off the critical request chain.
+    const cancel = whenIdle(() => fetchVisitCount().then((value) => alive && setCount(value)));
     return () => {
       alive = false;
+      cancel();
     };
   }, []);
 

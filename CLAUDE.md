@@ -29,6 +29,9 @@ There is no test runner. `npm run build` is the correctness gate.
 
 - **Content** lives in `src/app/data/` (`profile`, `projects`, `experience`, `skills`, `writing`).
   Edit data, not components, to change what the site says. Links are defined once in `profile.ts`.
+- **Prerendered**: `npm run build` renders `<App/>` to HTML (`src/entry-server.tsx`,
+  `scripts/prerender.mjs`) and the client hydrates it. Don't read `window`/`document`/`localStorage`
+  during render; do it in effects. Use `useReducedMotion` from `lib/hooks.ts`, not motion's.
 - **Page order** is the list in `src/app/App.tsx`. Each section uses `<Section id index title>`
   from `components/section.tsx`; renumber `index` props if you reorder.
 - **Theming**: dark-first; light/dark via `.theme-dark` on `<html>`, set before paint by an inline script in

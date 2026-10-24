@@ -6,6 +6,10 @@ import journalThumb from '../../assets/images/thumbs/BLog.webp';
 import attendanceThumb from '../../assets/images/thumbs/eattendance.webp';
 import chitwanThumb from '../../assets/images/thumbs/chitwan-computer-live.webp';
 import aabhaaThumb from '../../assets/images/thumbs/aaabhaa.webp';
+import journalMd from '../../assets/images/md/BLog.webp';
+import attendanceMd from '../../assets/images/md/eattendance.webp';
+import chitwanMd from '../../assets/images/md/chitwan-computer-live.webp';
+import aabhaaMd from '../../assets/images/md/aaabhaa.webp';
 
 export type Accent = 'blue' | 'orange' | 'green' | 'purple';
 
@@ -21,8 +25,11 @@ export type Project = {
   /** 2–3 concrete things you did or decided. No adjectives without evidence. */
   highlights: string[];
   stack: string[];
+  /** Full-size screenshot, at least 1174px wide. */
   image: string;
-  /** Small copy of `image` (352px wide) for the work tabs. */
+  /** 720px-wide copy of `image` for phones and 1x laptop screens. */
+  imageMd: string;
+  /** Small copy of `image` (288px wide) for the work tabs. */
   thumb: string;
   live?: string;
   /** Offer an embedded live preview of `live` (only for sites that load and allow framing). */
@@ -45,6 +52,7 @@ export const projects: Project[] = [
     ],
     stack: ['Java', 'Android', 'Laravel', 'Firebase', 'REST'],
     image: aabhaaShot,
+    imageMd: aabhaaMd,
     thumb: aabhaaThumb,
     source: 'https://github.com/Sandesh-Gadal/Aabhaa'
   },
@@ -62,6 +70,7 @@ export const projects: Project[] = [
     stack: ['React', 'Laravel', 'MySQL', 'Tailwind CSS'],
     // Was live at blog.oxfordcollege.edu.np; down for maintenance as of Oct 2026. Restore `live` when it's back.
     image: journalShot,
+    imageMd: journalMd,
     thumb: journalThumb
   },
   {
@@ -77,6 +86,7 @@ export const projects: Project[] = [
     ],
     stack: ['Laravel', 'MySQL', 'NFC', 'REST', 'Bootstrap'],
     image: attendanceShot,
+    imageMd: attendanceMd,
     thumb: attendanceThumb,
     source: 'https://github.com/Sandesh-Gadal/eAttendance'
   },
@@ -93,6 +103,7 @@ export const projects: Project[] = [
     ],
     stack: ['React', 'Laravel', 'MySQL', 'REST', 'Tailwind CSS'],
     image: chitwanShot,
+    imageMd: chitwanMd,
     thumb: chitwanThumb,
     live: 'https://chitwancomputer.com.np',
     // Repo is private or gone (404 as of Oct 2026); add `source` back if it's made public.

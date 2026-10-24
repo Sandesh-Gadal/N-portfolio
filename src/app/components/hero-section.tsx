@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react';
+import { motion, useScroll, useTransform, type MotionValue } from 'motion/react';
 import { ArrowDown, ArrowUpRight } from 'lucide-react';
 import { profile } from '../data/profile';
 import { experience } from '../data/experience';
-import { useGreeting, useLocalTime, useVisitCount } from '../lib/hooks';
+import { useGreeting, useLocalTime, useVisitCount, useReducedMotion } from '../lib/hooks';
 import { Avatar } from './avatar';
 
 // The three.js orb (./hero-orb.tsx) is kept but not rendered; lazy-import it into Stage to bring it back.
@@ -52,7 +52,9 @@ export function HeroSection() {
         </motion.div>
 
         <motion.div style={{ opacity: fade, y: textY }} className="flex flex-col items-center">
-          <motion.h1 {...rise(0.1)} className="mt-6">
+          {/* No entrance animation on the name: it's the largest text on first paint (the LCP element),
+              and it's in the prerendered HTML, so it should show before the JS arrives. */}
+          <h1 className="mt-6">
             <span className="display block text-[clamp(2.25rem,5.5vw,4rem)] leading-none">
               Sandesh Gadal<span className="text-signal">.</span>
             </span>
@@ -60,7 +62,7 @@ export function HeroSection() {
               Backend &amp; IoT developer, from the database to the{' '}
               <span className="font-display font-semibold italic text-signal-ink">device</span>.
             </span>
-          </motion.h1>
+          </h1>
 
           <motion.p {...rise(0.18)} className="tag mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
             {profile.available && (

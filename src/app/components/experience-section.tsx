@@ -1,8 +1,9 @@
 import { useRef } from 'react';
-import { motion, useInView, useReducedMotion } from 'motion/react';
+import { motion, useInView } from 'motion/react';
 import { experience, type Role } from '../data/experience';
 import { Avatar } from './avatar';
 import { Section } from './section';
+import { useReducedMotion } from '../lib/hooks';
 
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 const NOW = (() => {

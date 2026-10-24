@@ -44,7 +44,7 @@ export function VisitCounter() {
         <br />
         so far
       </p>
-      <p className="flex gap-1" aria-label={`${visits.toLocaleString('en-US')} visits`}>
+      <p role="img" className="flex gap-1" aria-label={`${visits.toLocaleString('en-US')} visits`}>
         {text.split('').map((d, i) => (
           <span
             key={i}
