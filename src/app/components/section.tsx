@@ -1,6 +1,7 @@
 import { useRef, type ReactNode } from 'react';
-import { motion, useReducedMotion } from 'motion/react';
+import { motion } from 'motion/react';
 import { gsap, useGsap } from '../lib/gsap';
+import { useReducedMotion } from '../lib/hooks';
 
 type SectionProps = {
   id: string;

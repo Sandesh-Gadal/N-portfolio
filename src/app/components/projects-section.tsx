@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { ArrowUpRight, ChevronLeft, ChevronRight, Github, Image, MonitorPlay, Pause, Play } from 'lucide-react';
 import { projects, type Project } from '../data/projects';
 import { Avatar } from './avatar';
 import { Reveal, Section } from './section';
+import { useReducedMotion } from '../lib/hooks';
 
 /** How long each project stays up before the slideshow moves on. */
 const INTERVAL = 6000;
@@ -208,7 +209,8 @@ export function ProjectsSection() {
                     <span className="block aspect-video overflow-hidden border-b border-line">
                       <img
                         src={p.thumb}
-                        alt=""
+                        alt={`${p.title} thumbnail`}
+                        aria-hidden
                         loading="lazy"
                         className={`size-full object-cover object-top transition duration-500 group-hover:scale-105 ${
                           selected ? '' : 'opacity-60 grayscale group-hover:opacity-100 group-hover:grayscale-0'

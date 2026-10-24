@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform, type MotionValue } from 'motion/react';
+import { AnimatePresence, motion, useScroll, useTransform, type MotionValue } from 'motion/react';
 import { AppWindow, Container, Cpu, Database, Server, type LucideIcon } from 'lucide-react';
 import { layers, skills, type Layer } from '../data/skills';
 import { gsap, ScrollTrigger } from '../lib/gsap';
 import { Reveal, Section } from './section';
+import { useReducedMotion } from '../lib/hooks';
 
 type Usage = 'Daily' | 'Comfortable' | 'Learning';
 
@@ -40,10 +41,11 @@ export function SkillsSection() {
   const tabs = useRef<(HTMLButtonElement | null)[]>([]);
   const { scrollYProgress } = useScroll({ target: stageRef, offset: ['start end', 'center center'] });
   // Plates are bigger from md up, so they need more room between them.
-  const [wide, setWide] = useState(() => window.matchMedia('(min-width: 768px)').matches);
+  const [wide, setWide] = useState(false);
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 768px)');
     const onChange = () => setWide(mq.matches);
+    onChange();
     mq.addEventListener('change', onChange);
     return () => mq.removeEventListener('change', onChange);
   }, []);

@@ -49,9 +49,9 @@ export function Navbar() {
       </a>
 
       <nav aria-label="Primary" className="page flex h-16 items-center justify-between gap-4">
-        <a href="#top" onClick={() => setOpen(false)} aria-label="Sandesh Gadal, back to top" className="flex items-center gap-2.5">
-          <span className="grid size-8 place-items-center rounded-md bg-screen font-display text-sm font-bold text-trace">SG</span>
-          <span className="tag hidden text-foreground sm:inline">Sandesh Gadal</span>
+        <a href="#top" onClick={() => setOpen(false)} className="flex items-center gap-2.5">
+          <span aria-hidden className="grid size-8 place-items-center rounded-md bg-screen font-display text-sm font-bold text-trace">SG</span>
+          <span className="tag sr-only text-foreground sm:not-sr-only">Sandesh Gadal</span>
         </a>
 
         <ul className="hidden items-center gap-1 lg:flex">

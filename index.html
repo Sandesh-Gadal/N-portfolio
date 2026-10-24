@@ -26,8 +26,6 @@
     <link rel="me" href="https://www.linkedin.com/in/sandesh-gadal-743560293" />
     <meta name="theme-color" content="#0b0e14" />
 
-    <!-- Crawlers without JS see #seo-fallback; with JS it is hidden before paint and React replaces it. -->
-    <style>.js #seo-fallback { display: none; } #seo-fallback { max-width: 46rem; margin: 0 auto; padding: 3rem 1rem; line-height: 1.6; }</style>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -114,12 +112,19 @@
       }
     </script>
 
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-KVSS658B');</script>
+    <!-- Google Tag Manager, loaded after the page so its ~120 kB doesn't compete with the site's own files on slow connections. -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      window.addEventListener('load', function () {
+        setTimeout(function () {
+          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+          })(window,document,'script','dataLayer','GTM-KVSS658B');
+        }, 0);
+      });
+    </script>
     <!-- End Google Tag Manager -->
   </head>
   <body>
@@ -127,89 +132,7 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KVSS658B"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
-    <div id="root">
-      <!-- No-JS / crawler copy of the page. React replaces it on mount. Mirrors src/app/data/*; update both. -->
-      <main id="seo-fallback">
-        <header>
-          <h1>Sandesh Gadal, backend &amp; IoT developer in Chitwan, Nepal</h1>
-          <p>I build Laravel and MySQL backends, plus the awkward part where a real device has to send them data.</p>
-          <p>Right now I'm lead developer at Hexa Labs, building an automatic milk collection system: the analyser at the collection centre tests a sample and the reading goes straight into the database. Part-time, I'm building an MIS platform for Loopix Creations. I'm based in Bharatpur, Chitwan, on Nepal time (UTC+5:45), and available for full-time, contract and freelance work.</p>
-          <p><a href="#work">Selected work</a> · <a href="#experience">Experience</a> · <a href="#faq">FAQ</a> · <a href="#contact">Contact</a></p>
-        </header>
-
-        <section id="work">
-          <h2>Selected work: Laravel, React and the devices in between</h2>
-          <article>
-            <h3>Aabhaa</h3>
-            <p>A farming assistant that puts local weather, crop recommendations and soil NPK readings in one app. I built the Android client in Java, backed by a Laravel API and Firebase. <a href="https://github.com/Sandesh-Gadal/Aabhaa">Source on GitHub</a></p>
-          </article>
-          <article>
-            <h3>Digital Journal Publication System (Oxford College)</h3>
-            <p>Takes an academic journal online end to end: submission, peer review, editorial decisions and publication. Authors, reviewers and editors each see only their own step. React front end on Laravel and MySQL.</p>
-          </article>
-          <article>
-            <h3>NFC E-Attendance</h3>
-            <p>Students tap an NFC card and attendance is recorded. A Laravel REST API writes card reads to MySQL and builds per-class and per-student reports. <a href="https://github.com/Sandesh-Gadal/eAttendance">Source on GitHub</a></p>
-          </article>
-          <article>
-            <h3>Chitwan Computer</h3>
-            <p>Storefront and product catalogue for Chitwan Computer, the shop where I started out repairing machines. The owners update products from a Laravel admin panel themselves. <a href="https://chitwancomputer.com.np">chitwancomputer.com.np</a></p>
-          </article>
-        </section>
-
-        <section id="experience">
-          <h2>Experience</h2>
-          <ul>
-            <li><strong>Project Manager / Lead Developer, Hexa Labs</strong> (Apr 2026 – present): leading the automatic milk collection system; designing how the milk analysers connect; owning third-party integrations.</li>
-            <li><strong>Backend Developer, Loopix Creations</strong> (May 2025 – present, part-time): architecting an MIS platform; Laravel REST APIs; MySQL query tuning; hybrid hosting.</li>
-            <li><strong>Admin Lead, Code for Change</strong> (2024–25 term): workshops and tech programmes for students.</li>
-            <li><strong>Backend Developer Intern, OCEM</strong> (Nov 2024 – Jan 2025): React and Tailwind on Laravel services, GitLab merge-request review.</li>
-            <li><strong>Web Developer, self-employed</strong> (Sep 2023 – Dec 2024): Laravel and React sites for clients, scoping to handover.</li>
-            <li><strong>Web Development Intern, Encryptix</strong> (Jul – Aug 2024, remote).</li>
-            <li><strong>Computer Service Technician, Chitwan Computer</strong> (Feb 2021 – Jul 2023).</li>
-          </ul>
-        </section>
-
-        <section id="toolbox">
-          <h2>What I work with</h2>
-          <p><strong>Daily:</strong> PHP, Laravel, MySQL, REST API design, React, TypeScript, Tailwind CSS, Git, IoT device integration.</p>
-          <p><strong>On real projects:</strong> Node.js, PostgreSQL, Docker, Linux, Firebase, Java (Android), Bootstrap, NFC readers.</p>
-          <p><strong>Learning:</strong> Kubernetes, Terraform, Ansible, AWS, CI/CD pipelines.</p>
-        </section>
-
-        <section id="writing">
-          <h2>Writing</h2>
-          <p><a href="https://bosc.org.np/blogs/basic-linux-commands/">Essential Linux commands for beginners</a> (BOSC Nepal, 25 Oct 2025): the terminal commands a new Linux user actually needs.</p>
-        </section>
-
-        <section id="about">
-          <h2>About: trace the fault to its source</h2>
-          <p>I started out repairing computers at Chitwan Computer, a shop in Chitwan whose website I later built. That job taught me the habit I still work by: trace the fault to its source before touching anything.</p>
-          <p>Today I work across the stack: Laravel, MySQL and API design on the back end, React on the front, and at Hexa Labs, the milk analysers that report into the system. Outside work, I was Admin Lead at Code for Change for the 2024–25 term.</p>
-        </section>
-
-        <section id="faq">
-          <h2>Before you ask</h2>
-          <dl>
-            <dt>What kind of work do you take on?</dt>
-            <dd>Backend work in Laravel and MySQL: schema design, REST APIs, slow-query fixes and deployment. I also connect physical devices to those backends; I've put milk analysers and NFC card readers into production systems. If you need a Laravel developer in Nepal whose backend has to take data from hardware, that's my strongest fit.</dd>
-            <dt>Are you available for freelance, contract or full-time work?</dt>
-            <dd>Yes, all three. I work remotely, or on-site if you're in Chitwan.</dd>
-            <dt>What time zone do you work in?</dt>
-            <dd>Nepal Time, UTC+5:45. My afternoon overlaps the European morning: 14:00 in Bharatpur is 09:15 in Berlin in winter.</dd>
-            <dt>Can you connect hardware we already have to a web system?</dt>
-            <dd>That's most of my current job at Hexa Labs. Send me the device model and how it outputs data, and I'll tell you what the integration involves.</dd>
-            <dt>Do you only do backend?</dt>
-            <dd>Backend is my focus. I build the React front end too when a project needs one, as with the journal platform and the Chitwan Computer storefront.</dd>
-          </dl>
-        </section>
-
-        <section id="contact">
-          <h2>Contact</h2>
-          <p>Tell me what you're building and what hardware is involved, if any. Email <a href="mailto:gadalsandesh123@gmail.com">gadalsandesh123@gmail.com</a>, or find me on <a href="https://github.com/Sandesh-Gadal">GitHub</a> and <a href="https://www.linkedin.com/in/sandesh-gadal-743560293">LinkedIn</a>.</p>
-        </section>
-      </main>
-    </div>
+    <div id="root"><!--app-html--></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

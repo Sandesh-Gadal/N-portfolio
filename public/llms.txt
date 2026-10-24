@@ -2,7 +2,7 @@
 
 > Backend and IoT developer in Bharatpur, Chitwan, Nepal (UTC+5:45). Builds Laravel and MySQL backends, React front ends, and the integrations where physical devices send data into them. Available for full-time, contract and freelance work, remote or on-site in Chitwan.
 
-This site is a single page. The same content is in the HTML of https://www.sandeshgadal.com.np/ for clients that don't run JavaScript. Keep this file in sync with src/app/data/ and the #seo-fallback block in index.html.
+This site is a single page, prerendered at build time, so its HTML at https://www.sandeshgadal.com.np/ carries the full content without JavaScript.
 
 ## Now
 
