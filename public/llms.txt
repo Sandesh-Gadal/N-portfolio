@@ -1,0 +1,33 @@
+# Sandesh Gadal
+
+> Backend and IoT developer in Bharatpur, Chitwan, Nepal (UTC+5:45). Builds Laravel and MySQL backends, React front ends, and the integrations where physical devices send data into them. Available for full-time, contract and freelance work, remote or on-site in Chitwan.
+
+This site is a single page. The same content is in the HTML of https://www.sandeshgadal.com.np/ for clients that don't run JavaScript. Keep this file in sync with src/app/data/ and the #seo-fallback block in index.html.
+
+## Now
+
+- Project Manager / Lead Developer, Hexa Labs (Apr 2026 – present): leading an automatic milk collection system where the analyser at the collection centre tests a sample and the reading goes straight into the database.
+- Backend Developer, Loopix Creations (May 2025 – present, part-time): architecting an MIS platform; Laravel REST APIs; MySQL query tuning.
+
+## Selected work
+
+- [Aabhaa](https://github.com/Sandesh-Gadal/Aabhaa): farming assistant combining local weather, crop recommendations and soil NPK readings. Android client in Java on a Laravel API and Firebase.
+- Digital Journal Publication System (Oxford College): submission, peer review, editorial decisions and publication for an academic journal. React on Laravel and MySQL.
+- [NFC E-Attendance](https://github.com/Sandesh-Gadal/eAttendance): students tap an NFC card and a Laravel REST API records attendance in MySQL, with per-class and per-student reports.
+- [Chitwan Computer](https://chitwancomputer.com.np): storefront and product catalogue with a Laravel admin panel the owners update themselves.
+
+## Skills
+
+- Daily: PHP, Laravel, MySQL, REST API design, React, TypeScript, Tailwind CSS, Git, IoT device integration.
+- On real projects: Node.js, PostgreSQL, Docker, Linux, Firebase, Java (Android), NFC readers.
+- Learning: Kubernetes, Terraform, Ansible, AWS, CI/CD pipelines.
+
+## Writing
+
+- [Essential Linux commands for beginners](https://bosc.org.np/blogs/basic-linux-commands/) (BOSC Nepal, 25 Oct 2025)
+
+## Contact
+
+- Site: https://www.sandeshgadal.com.np/#contact
+- GitHub: https://github.com/Sandesh-Gadal
+- LinkedIn: https://www.linkedin.com/in/sandesh-gadal-743560293
