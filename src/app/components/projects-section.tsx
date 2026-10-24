@@ -207,7 +207,7 @@ export function ProjectsSection() {
                   >
                     <span className="block aspect-video overflow-hidden border-b border-line">
                       <img
-                        src={p.image}
+                        src={p.thumb}
                         alt=""
                         loading="lazy"
                         className={`size-full object-cover object-top transition duration-500 group-hover:scale-105 ${

@@ -2,6 +2,10 @@ import journalShot from '../../assets/images/BLog.webp';
 import attendanceShot from '../../assets/images/eattendance.webp';
 import chitwanShot from '../../assets/images/chitwan-computer-live.webp';
 import aabhaaShot from '../../assets/images/aaabhaa.webp';
+import journalThumb from '../../assets/images/thumbs/BLog.webp';
+import attendanceThumb from '../../assets/images/thumbs/eattendance.webp';
+import chitwanThumb from '../../assets/images/thumbs/chitwan-computer-live.webp';
+import aabhaaThumb from '../../assets/images/thumbs/aaabhaa.webp';
 
 export type Accent = 'blue' | 'orange' | 'green' | 'purple';
 
@@ -18,6 +22,8 @@ export type Project = {
   highlights: string[];
   stack: string[];
   image: string;
+  /** Small copy of `image` (352px wide) for the work tabs. */
+  thumb: string;
   live?: string;
   /** Offer an embedded live preview of `live` (only for sites that load and allow framing). */
   preview?: boolean;
@@ -39,6 +45,7 @@ export const projects: Project[] = [
     ],
     stack: ['Java', 'Android', 'Laravel', 'Firebase', 'REST'],
     image: aabhaaShot,
+    thumb: aabhaaThumb,
     source: 'https://github.com/Sandesh-Gadal/Aabhaa'
   },
   {
@@ -54,7 +61,8 @@ export const projects: Project[] = [
     ],
     stack: ['React', 'Laravel', 'MySQL', 'Tailwind CSS'],
     // Was live at blog.oxfordcollege.edu.np; down for maintenance as of Oct 2026. Restore `live` when it's back.
-    image: journalShot
+    image: journalShot,
+    thumb: journalThumb
   },
   {
     slug: 'e-attendance',
@@ -69,6 +77,7 @@ export const projects: Project[] = [
     ],
     stack: ['Laravel', 'MySQL', 'NFC', 'REST', 'Bootstrap'],
     image: attendanceShot,
+    thumb: attendanceThumb,
     source: 'https://github.com/Sandesh-Gadal/eAttendance'
   },
   {
@@ -84,6 +93,7 @@ export const projects: Project[] = [
     ],
     stack: ['React', 'Laravel', 'MySQL', 'REST', 'Tailwind CSS'],
     image: chitwanShot,
+    thumb: chitwanThumb,
     live: 'https://chitwancomputer.com.np',
     // Repo is private or gone (404 as of Oct 2026); add `source` back if it's made public.
     preview: true
