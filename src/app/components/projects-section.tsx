@@ -280,6 +280,8 @@ function Card({ project, live, onToggleLive }: { project: Project; live: boolean
         ) : (
           <img
             src={project.image}
+            srcSet={`${project.imageMd} 720w, ${project.image} 1174w`}
+            sizes="(min-width: 1024px) 600px, calc(100vw - 2rem)"
             alt={`Screenshot of ${project.title}`}
             decoding="async"
             className="absolute inset-0 size-full object-cover object-top"

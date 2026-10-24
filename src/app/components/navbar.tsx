@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Command, Menu, Moon, Sun, X } from 'lucide-react';
-import { CommandMenu } from './command-menu';
 import { useActiveSection, useTheme } from '../lib/hooks';
+import { useCommandShortcut } from '../lib/command';
+
+const CommandMenu = lazy(() => import('./command-menu'));
 
 const navItems = [
   { label: 'Work', id: 'work' },
@@ -17,6 +19,10 @@ const sectionIds = navItems.map((item) => item.id);
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  // Mount (and so download) the palette on first open; keep it mounted after that.
+  const [paletteUsed, setPaletteUsed] = useState(false);
+  if (paletteOpen && !paletteUsed) setPaletteUsed(true);
+  useCommandShortcut(paletteOpen, setPaletteOpen);
   const [scrolled, setScrolled] = useState(false);
   const active = useActiveSection(sectionIds);
   const { theme, toggle } = useTheme();
@@ -104,7 +110,11 @@ export function Navbar() {
         </div>
       </nav>
 
-      <CommandMenu open={paletteOpen} onOpenChange={setPaletteOpen} theme={theme} onToggleTheme={toggle} />
+      {paletteUsed && (
+        <Suspense fallback={null}>
+          <CommandMenu open={paletteOpen} onOpenChange={setPaletteOpen} theme={theme} onToggleTheme={toggle} />
+        </Suspense>
+      )}
 
       {open && (
         <ul id="mobile-nav" className="page grid pb-4 lg:hidden">

@@ -1,7 +1,7 @@
 import { Command } from 'lucide-react';
 import { profile } from '../data/profile';
 import { useLocalTime } from '../lib/hooks';
-import { OPEN_COMMAND_EVENT } from './command-menu';
+import { OPEN_COMMAND_EVENT } from '../lib/command';
 import { VisitCounter } from './visit-counter';
 
 export function Footer() {
