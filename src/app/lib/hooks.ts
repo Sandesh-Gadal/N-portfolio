@@ -1,5 +1,6 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { fetchVisitCount } from '../services/visits';
+import { whenIdle } from './idle';
 
 export type Theme = 'light' | 'dark';
 
@@ -78,9 +79,11 @@ export function useVisitCount() {
 
   useEffect(() => {
     let alive = true;
-    fetchVisitCount().then((value) => alive && setCount(value));
+    // Not needed for first paint; keep it off the critical request chain.
+    const cancel = whenIdle(() => fetchVisitCount().then((value) => alive && setCount(value)));
     return () => {
       alive = false;
+      cancel();
     };
   }, []);
 
