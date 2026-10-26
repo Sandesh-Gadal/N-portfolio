@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ArrowUpRight, Check, Copy, Send } from 'lucide-react';
+import { ArrowUpRight, Check, Copy, Mail, Send } from 'lucide-react';
 import { Input } from './ui/input';
 import { Textarea } from './ui/textarea';
 import { sendContactEmail } from '../services/mail';
@@ -23,6 +23,8 @@ export function ContactSection() {
   const formRef = useRef<HTMLFormElement>(null);
   const [status, setStatus] = useState<Status>('idle');
   const [copied, setCopied] = useState(false);
+  // Once copied, the address stays on screen so the visitor can see what they copied.
+  const [revealed, setRevealed] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,6 +46,7 @@ export function ContactSection() {
     try {
       await navigator.clipboard.writeText(profile.email);
       setCopied(true);
+      setRevealed(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
       window.location.href = `mailto:${profile.email}`;
@@ -71,24 +74,21 @@ export function ContactSection() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center gap-3">
-              <a
-                href={`mailto:${profile.email}`}
-                className="break-all font-mono text-[clamp(0.95rem,4.6vw,1.25rem)] underline decoration-signal decoration-1 underline-offset-8 transition-colors hover:text-signal md:text-2xl"
-              >
-                {profile.email}
-              </a>
+              {/* Buttons rather than a printed address, so the email isn't in the HTML for scrapers. */}
+              <button type="button" onClick={copyEmail} className="key key-screen">
+                {copied ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />}
+                {copied ? 'Email copied' : 'Copy email address'}
+              </button>
               <button
                 type="button"
-                onClick={copyEmail}
-                className="key key-screen h-9 px-3 text-xs"
-                aria-label={copied ? 'Email copied' : 'Copy email address'}
+                onClick={() => (window.location.href = `mailto:${profile.email}`)}
+                className="key key-screen"
               >
-                {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
-                {copied ? 'copied' : 'copy'}
+                <Mail className="size-4" aria-hidden /> Open in mail app
               </button>
-              <span role="status" className="sr-only">
-                {copied ? 'Email address copied to clipboard' : ''}
-              </span>
+              <p role="status" className="w-full font-mono text-sm text-on-screen-muted">
+                {revealed ? `${profile.email} is on your clipboard.` : ''}
+              </p>
             </div>
 
             <div className="mt-8 flex flex-wrap gap-2">

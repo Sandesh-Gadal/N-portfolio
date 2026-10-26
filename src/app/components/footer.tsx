@@ -16,7 +16,7 @@ export function Footer() {
             {[
               ['GitHub', profile.links.github],
               ['LinkedIn', profile.links.linkedin],
-              ['Email', `mailto:${profile.email}`],
+              ['Email', '#contact'],
               ['Resume', profile.resume]
             ].map(([label, href]) => (
               <li key={label}>

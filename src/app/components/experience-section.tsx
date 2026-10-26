@@ -146,8 +146,12 @@ function StepLabel({ role }: { role: Role }) {
   return (
     <div>
       <p className={`display text-2xl leading-none ${live ? 'text-signal' : 'text-muted-foreground'}`}>{year(role)}</p>
-      <h3 className="mt-1.5 text-sm font-semibold leading-snug">{role.title}</h3>
-      <p className="text-xs font-semibold text-signal-ink">{role.company}</p>
+      {/* Company is part of the heading so each one names the organisation ("Admin Lead, Code for Change"). */}
+      <h3 className="mt-1.5 text-sm font-semibold leading-snug">
+        {role.title}
+        <span className="sr-only">, </span>
+        <span className="block text-xs text-signal-ink">{role.company}</span>
+      </h3>
       <p className="meta mt-0.5 text-[11px]">
         {duration(role)}
         {role.kind && ` · ${role.kind}`}
